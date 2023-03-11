@@ -6,42 +6,21 @@ const
   USE_DEFAULT_TABLE = true
 
 include lib/header/chaemon_header
-import atcoder/scc
-import lib/other/bitset
+import lib/graph/graph_template
 
 solveProc solve(N:int, M:int, u:seq[int], v:seq[int]):
   Pred u, v
-  var g = initSccGraph(N)
-  for i in M:
-    g.addEdge(u[i], v[i])
-  var
-    ans = 0
-    scc = g.scc
-    belongs = Seq[N: int]
-  for i, s in scc:
-    ans += s.len * (s.len - 1)
-    for v in s:
-      belongs[v] = i
-  var
-    N2 = scc.len
-    t = Seq[N2: initBitSet[2000]()]
-  for u in N2:
-    t[u][u] = 1
-  for i in M:
-    let
-      u = belongs[u[i]]
-      v = belongs[v[i]]
-    if u != v:
-      t[u][v] = 1
-  for k in N2:
-    for i in N2:
-      for j in N2:
-        if t[i][k] == 1:
-          t[i][j] = t[i][j] or t[k][j]
-  for i in N2:
-    for j in N2:
-      if i != j and t[i][j] == 1:
-        ans += scc[i].len * scc[j].len
+  g := initDirectedGraph(N, u, v)
+  ans := 0
+  for u in N:
+    vis := Seq[N: false]
+    proc dfs(u, p:int) =
+      if vis[u]: return
+      vis[u] = true
+      for e in g[u]:
+        dfs(e.dst, u)
+    dfs(u, -1)
+    ans += vis.count(true) - 1
   echo ans - M
   discard
 
