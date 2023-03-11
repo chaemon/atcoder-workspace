@@ -7,16 +7,15 @@ const
 
 include lib/header/chaemon_header
 
-solveProc solve(K:int):
-  var ans = ""
-  for i in K:
-    ans.add 'A' + i
-  echo ans
+solveProc solve(N:int, X:seq[int]):
+  var X = X.sorted
+  echo (X[N ..< 4 * N].sum) / (3 * N)
   discard
 
 when not defined(DO_TEST):
-  var K = nextInt()
-  solve(K)
+  var N = nextInt()
+  var X = newSeqWith(5*N, nextInt())
+  solve(N, X)
 else:
   discard
 

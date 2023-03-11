@@ -7,16 +7,15 @@ const
 
 include lib/header/chaemon_header
 
-solveProc solve(K:int):
-  var ans = ""
-  for i in K:
-    ans.add 'A' + i
-  echo ans
+solveProc solve(N:int, M:int, B:seq[int], C:seq[int]):
   discard
 
 when not defined(DO_TEST):
-  var K = nextInt()
-  solve(K)
+  var N = nextInt()
+  var M = nextInt()
+  var B = newSeqWith(N, nextInt())
+  var C = newSeqWith(M, nextInt())
+  solve(N, M, B, C)
 else:
   discard
 

@@ -7,16 +7,17 @@ const
 
 include lib/header/chaemon_header
 
-solveProc solve(K:int):
-  var ans = ""
-  for i in K:
-    ans.add 'A' + i
-  echo ans
+solveProc solve(S:string):
+  var i = 1
+  for s in S:
+    if s in 'A'..'Z':
+      echo i;break
+    i.inc
   discard
 
 when not defined(DO_TEST):
-  var K = nextInt()
-  solve(K)
+  var S = nextString()
+  solve(S)
 else:
   discard
 

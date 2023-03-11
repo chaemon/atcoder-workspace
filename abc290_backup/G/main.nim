@@ -7,16 +7,12 @@ const
 
 include lib/header/chaemon_header
 
-solveProc solve(K:int):
-  var ans = ""
-  for i in K:
-    ans.add 'A' + i
-  echo ans
+# Failed to predict input format
+solveProc solve():
   discard
 
 when not defined(DO_TEST):
-  var K = nextInt()
-  solve(K)
+  solve()
 else:
   discard
 

@@ -7,16 +7,20 @@ const
 
 include lib/header/chaemon_header
 
-solveProc solve(K:int):
-  var ans = ""
+solveProc solve(N:int, K:int, A:seq[int]):
+  var S = A.toSet()
   for i in K:
-    ans.add 'A' + i
-  echo ans
+    if i notin S:
+      echo i
+      return
+  echo K
   discard
 
 when not defined(DO_TEST):
+  var N = nextInt()
   var K = nextInt()
-  solve(K)
+  var A = newSeqWith(N, nextInt())
+  solve(N, K, A)
 else:
   discard
 
