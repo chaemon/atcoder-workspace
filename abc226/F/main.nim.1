@@ -1,0 +1,36 @@
+const
+  DO_CHECK = true
+  DEBUG = true
+  DO_TEST = false
+  USE_DEFAULT_TABLE = true
+
+include lib/header/chaemon_header
+
+import lib/math/combination
+
+import atcoder/modint
+const MOD = 998244353
+type mint = modint998244353
+
+solveProc solve(N:int, K:int):
+  var dp = Seq[N + 1: initTable[int, mint]()] # used, lcm
+  dp[0][1] = mint(1)
+  for n in 0..<N:
+    for l,c in dp[n]:
+      for t in 1..N-n:
+        # select t - 1 among N - n
+        var l2 = lcm(l, t)
+        dp[n + t][l2] += mint.C(N - n - 1, t - 1) * mint.fact(t - 1) * c
+  var ans = mint(0)
+  for l, c in dp[N]:
+    ans += mint(l)^K * c
+  echo ans
+  return
+
+when not DO_TEST:
+  var N = nextInt()
+  var K = nextInt()
+  solve(N, K)
+else:
+  discard
+

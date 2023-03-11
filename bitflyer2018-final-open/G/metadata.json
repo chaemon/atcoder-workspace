@@ -1,0 +1,13 @@
+{
+ "code_filename": "main.cpp",
+ "lang": "cpp",
+ "problem": {
+  "alphabet": "G",
+  "contest": {
+   "contest_id": "bitflyer2018-final-open"
+  },
+  "problem_id": "bitflyer2018_final_g"
+ },
+ "sample_in_pattern": "in_*.txt",
+ "sample_out_pattern": "out_*.txt"
+}

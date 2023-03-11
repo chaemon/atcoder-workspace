@@ -1,0 +1,16 @@
+{
+ "code_filename": "main.nim",
+ "judge": {
+  "judge_type": "normal"
+ },
+ "lang": "nim",
+ "problem": {
+  "alphabet": "B",
+  "contest": {
+   "contest_id": "kupc2013"
+  },
+  "problem_id": "kupc2013_b"
+ },
+ "sample_in_pattern": "in_*.txt",
+ "sample_out_pattern": "out_*.txt"
+}

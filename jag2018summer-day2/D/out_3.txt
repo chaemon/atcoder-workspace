@@ -1,0 +1,34 @@
+using System;
+using System.IO;
+
+class Crypto {
+    ...
+}
+class Myon {
+    static void Main() {
+        var writer = new StreamWriter(Console.OpenStandardOutput()){AutoFlush = false}; //fast writer
+        Console.SetOut(writer);
+
+        int MOD = int.Parse(Console.ReadLine());
+        int Q = int.Parse(Console.ReadLine());
+        Crypto c = new Crypto();
+        for (int i = 0; i < Q; i++) {
+            var inputs = Console.ReadLine().Split(' ');
+            int t, w, v, l, r;
+            t = c.decode(int.Parse(inputs[0]));
+            w = c.decode(int.Parse(inputs[1]));
+            v = c.decode(int.Parse(inputs[2]));
+            l = c.decode(int.Parse(inputs[3]));
+            r = c.decode(int.Parse(inputs[4]));
+            if (t == 1) {
+                (add candy(w, v))
+            } else {
+                (delete candy)
+            }
+            long ans = (answer for query(l, r));
+            c.query(ans);
+            Console.WriteLine(ans);
+        }
+        Console.Out.Flush();
+    }
+}

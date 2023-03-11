@@ -1,0 +1,243 @@
+#{{{ header
+{.hints:off warnings:off optimization:speed.}
+import algorithm, sequtils, tables, macros, math, sets, strutils
+when defined(MYDEBUG):
+  import header
+
+import streams
+proc scanf(formatstr: cstring){.header: "<stdio.h>", varargs.}
+#proc getchar(): char {.header: "<stdio.h>", varargs.}
+proc nextInt(): int = scanf("%lld",addr result)
+proc nextFloat(): float = scanf("%lf",addr result)
+proc nextString[F](f:F): string =
+  var get = false
+  result = ""
+  while true:
+#    let c = getchar()
+    let c = f.readChar
+    if c.int > ' '.int:
+      get = true
+      result.add(c)
+    elif get: return
+proc nextInt[F](f:F): int = parseInt(f.nextString)
+proc nextFloat[F](f:F): float = parseFloat(f.nextString)
+proc nextString():string = stdin.nextString()
+
+type SomeSignedInt = int|int8|int16|int32|int64|BiggestInt
+type SomeUnsignedInt = uint|uint8|uint16|uint32|uint64
+type SomeInteger = SomeSignedInt|SomeUnsignedInt
+type SomeFloat = float|float32|float64|BiggestFloat
+template `max=`*(x,y:typed):void = x = max(x,y)
+template `min=`*(x,y:typed):void = x = min(x,y)
+template inf(T): untyped = 
+  when T is SomeFloat: T(Inf)
+  elif T is SomeInteger: ((T(1) shl T(sizeof(T)*8-2)) - (T(1) shl T(sizeof(T)*4-1)))
+  else: assert(false)
+
+proc sort[T](v: var seq[T]) = v.sort(cmp[T])
+proc discardableId[T](x: T): T {.discardable.} =
+  return x
+macro `:=`(x, y: untyped): untyped =
+  if (x.kind == nnkIdent):
+    return quote do:
+      when declaredInScope(`x`):
+        `x` = `y`
+      else:
+        var `x` = `y`
+      discardableId(`x`)
+  else:
+    return quote do:
+      `x` = `y`
+      discardableId(`x`)
+macro dump*(x: typed): untyped =
+  let s = x.toStrLit
+  let r = quote do:
+    debugEcho `s`, " = ", `x`
+  return r
+
+proc toStr[T](v:T):string =
+  proc `$`[T](v:seq[T]):string =
+    v.mapIt($it).join(" ")
+  return $v
+
+proc print0(x: varargs[string, toStr]; sep:string):string{.discardable.} =
+  result = ""
+  for i,v in x:
+    if i != 0: addSep(result, sep = sep)
+    add(result, v)
+  result.add("\n")
+  stdout.write result
+
+var print:proc(x: varargs[string, toStr])
+print = proc(x: varargs[string, toStr]) =
+  discard print0(@x, sep = " ")
+
+proc ndSeqImpl[T](lens: seq[int]; init: T; currentDimension, lensLen: static[int]): auto =
+  when currentDimension == lensLen:
+    newSeqWith(lens[currentDimension - 1], init)
+  else:
+    newSeqWith(lens[currentDimension - 1], ndSeqImpl(lens, init, currentDimension + 1, lensLen))
+
+template ndSeq*[T](lens: varargs[int]; init: T): untyped =
+  ndSeqImpl(@lens, init, 1, lens.len)
+#}}}
+
+const MOD = 1000000007
+var N:int
+var M:int
+var S:string
+
+#{{{ input part
+proc main()
+block:
+  N = nextInt()
+  M = nextInt()
+  S = nextString()
+#}}}
+
+#{{{ ModInt[Mod]
+proc getDefault(T:typedesc): T = (var temp:T;temp)
+proc getDefault[T](x:T): T = (var temp:T;temp)
+
+type ModInt[Mod: static[int]] = object
+  v:int
+proc initModInt[T](a:T, Mod: static[int]):ModInt[Mod] =
+  when T is ModInt[Mod]:
+    return a
+  else:
+    var a = a
+    a = a mod Mod
+    if a < 0: a += Mod
+    result.v = a
+proc initModInt[T](a:T):ModInt[Mod] = initModInt(a, MOD)
+proc init[T](self:ModInt[Mod], a:T):ModInt[Mod] = initModInt(a, Mod)
+proc Identity(self:ModInt[Mod]):ModInt[Mod] = return initModInt(1, Mod)
+
+proc `==`[T](a:ModInt[Mod], b:T):bool = a.v == a.init(b).v
+proc `!=`[T](a:ModInt[Mod], b:T):bool = a.v != a.init(b).v
+proc `-`(self:ModInt[Mod]):ModInt[Mod] =
+  if self.v == 0: return self
+  else: return ModInt[Mod](v:MOD - self.v)
+proc `$`(a:ModInt[Mod]):string = return $(a.v)
+
+proc `+=`[T](self:var ModInt[Mod]; a:T):void =
+  self.v += initModInt(a, Mod).v
+  if self.v >= MOD: self.v -= MOD
+proc `-=`[T](self:var ModInt[Mod],a:T):void =
+  self.v -= initModInt(a, Mod).v
+  if self.v < 0: self.v += MOD
+proc `*=`[T](self:var ModInt[Mod],a:T):void =
+  self.v *= initModInt(a, Mod).v
+  self.v = self.v mod MOD
+proc `^=`(self:var ModInt[Mod], n:int) =
+  var (x,n,a) = (self,n,self.Identity)
+  while n > 0:
+    if (n and 1) > 0: a *= x
+    x *= x
+    n = (n shr 1)
+  swap(self, a)
+proc inverse(x:int):ModInt[Mod] =
+  var (a, b) = (x, MOD)
+  var (u, v) = (1, 0)
+  while b > 0:
+    let t = a div b
+    a -= t * b;swap(a,b)
+    u -= t * v;swap(u,v)
+  return initModInt(u, Mod)
+proc `/=`[T](a:var ModInt[Mod],b:T):void = a *= initModInt(b, Mod).v.inverse()
+proc `+`[T](a:ModInt[Mod],b:T):ModInt[Mod] = result = a;result += b
+proc `-`[T](a:ModInt[Mod],b:T):ModInt[Mod] = result = a;result -= b
+proc `*`[T](a:ModInt[Mod],b:T):ModInt[Mod] = result = a;result *= b
+proc `/`[T](a:ModInt[Mod],b:T):ModInt[Mod] = result = a; result /= b
+proc `^`(a:ModInt[Mod],b:int):ModInt[Mod] = result = a; result ^= b
+#}}}
+
+type Mint = ModInt[Mod]
+proc initMint[T](a:T):ModInt[Mod] = initModInt(a, Mod)
+
+# CumulativeSum {{{
+import sequtils
+
+type CumulativeSum[T] = object
+  pos:int
+  data: seq[T]
+
+proc initCumulativeSum[T]():CumulativeSum[T] = CumulativeSum[T](data: newSeqWith(1, T().init(0)), pos:0)
+proc `[]=`[T](self: var CumulativeSum[T], k:int, x:T) =
+  if k < self.pos: doAssert(false)
+  if self.data.len < k + 2:
+    self.data.setlen(k + 2)
+  for i in self.pos+1..<k:
+    self.data[i + 1] = self.data[i]
+  self.data[k + 1] = self.data[k] + x
+  self.pos = k
+
+proc initCumulativeSum[T](data:seq[T]):CumulativeSum[T] =
+  result = initCumulativeSum[T]()
+  for i,d in data: result[i] = d
+
+proc sum[T](self: CumulativeSum[T], k:int):T =
+  if k < 0: return T().init(0)
+  return self.data[min(k, self.data.len - 1)]
+proc `[]`[T](self: CumulativeSum[T], s:Slice[int]):T =
+  if s.a > s.b: return T().init(0)
+  return self.sum(s.b + 1) - self.sum(s.a)
+#}}}
+
+# runLengthEncoding[T](v:seq[T]) {{{
+proc runLengthEncoding[T](v:seq[T]):seq[(T,int)] =
+  result = newSeq[(T,int)]()
+  var i = 0
+  while i < v.len:
+    var j = i
+    while j < v.len and v[j] == v[i]: j.inc
+    result.add((v[i], j - i))
+    i = j
+# }}}
+
+proc main() =
+  if S[0] == 'B':
+    for s in S.mitems:
+      if s == 'R': s = 'B'
+      elif s == 'B': s = 'R'
+  v := cast[seq[char]](S).runLengthEncoding()
+  if v.len == 1:
+    dp := newSeq[Mint](N + 1)
+    dp[0] = initMint(1)
+    dp[1] = initMint(2)
+    for i in 2..N:
+      dp[i] = dp[i - 1] + dp[i - 2]
+    ans := initMint(1 + N)
+    for d in 1..<N:
+      # RBRBR
+      rest := N - d - 2 - 2
+      if rest == -1: rest = 0
+      if rest >= 0:
+#        echo "add: ", d, " ", rest
+        ans += dp[rest] * (d + 1)
+    echo ans
+    return
+  if N mod 2 != 0:
+    echo 0;return
+  var t = if v[0][1] mod 2 == 0: v[0][1] + 1 else: v[0][1]
+  for i in 0..<v.len - 1:
+    let p = v[i]
+    if p[0] == 'R':
+      if p[1] mod 2 == 1: t.min= p[1]
+#  dump(t)
+  t2 := (t + 1) div 2
+  dp := newSeq[Mint](N div 2 + 1)
+  cs := initCumulativeSum[Mint]()
+  dp[0] = initMint(1)
+  cs[0] = dp[0]
+  for i in 1..<dp.len:
+    dp[i] = cs[i-t2..i-1]
+    cs[i] = dp[i]
+  ans := initMint(0)
+  for d in countup(1, t, 2):
+    rest := N - (d + 1)
+    ans += dp[rest div 2] * (d + 1)
+  echo ans
+  return
+
+main()

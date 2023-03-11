@@ -1,0 +1,33 @@
+import java.io.PrintWriter;
+import java.util.Scanner;
+
+public class Main {
+    public static class Crypto {
+        ...
+    }    
+    public static void main(String[] args) {
+        Scanner in = new Scanner(System.in); //!!warning!! : Java's scanner is slow
+        PrintWriter out = new PrintWriter(System.out);
+        int MOD = in.nextInt();
+        int Q = in.nextInt();
+
+        Crypto c = new Crypto();
+        for (int i = 0; i < Q; i++) {
+            int t, w, v, l, r;
+            t = c.decode(in.nextInt());
+            w = c.decode(in.nextInt());
+            v = c.decode(in.nextInt());
+            l = c.decode(in.nextInt());
+            r = c.decode(in.nextInt());
+            if (t == 1) {
+                (add candy(w, v))
+            } else {
+                (delete candy)
+            }
+            long ans = (answer for query(l, r));
+            c.query(ans);
+            out.println(ans);
+        }
+        out.flush();
+    }
+}

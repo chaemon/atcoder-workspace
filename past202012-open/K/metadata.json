@@ -1,0 +1,18 @@
+{
+ "code_filename": "main.nim",
+ "judge": {
+  "diff": 1e-06,
+  "error_type": "absolute_or_relative",
+  "judge_type": "decimal"
+ },
+ "lang": "nim",
+ "problem": {
+  "alphabet": "K",
+  "contest": {
+   "contest_id": "past202012-open"
+  },
+  "problem_id": "past202012_k"
+ },
+ "sample_in_pattern": "in_*.txt",
+ "sample_out_pattern": "out_*.txt"
+}

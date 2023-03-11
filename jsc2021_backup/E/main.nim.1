@@ -1,0 +1,85 @@
+include atcoder/extra/header/chaemon_header
+
+const NO = "impossible"
+
+const DEBUG = true
+
+toInt(a:char) => a.ord - 'a'.ord
+
+proc solve(K:int, S:string) =
+  var ans = 0
+  proc make_level0(v:seq[string]):int =
+    debug v
+    let l = v[0].len
+    if l == 0: return 0
+    elif l == 1: return int.inf
+    var dp = [0, int.inf] # palindrome, non-palindrome
+    let l2 = l div 2
+    for i in 0..<l2:
+      var dp2 = [int.inf, int.inf]
+      var ctl, ctr: array[26, int]
+      for v in v:
+        ctl[v[i].toInt].inc
+        ctr[v[l - 1 - i].toInt].inc
+      block:
+        let s = ctl.sum
+        for j in 26: ctl[j] = s - ctl[j]
+      block:
+        let s = ctr.sum
+        for j in 26: ctr[j] = s - ctr[j]
+      for j in 26:
+        for k in 26:
+          let u = ctl[j] + ctr[k]
+          if j == k:
+            dp2[0].min= dp[0] + u
+          else:
+            dp2[1].min= dp[0] + u
+          dp2[1].min= dp[1] + u
+      swap(dp, dp2)
+    if l mod 2 == 1:
+      var dp2 = [int.inf, int.inf]
+      var ct: array[26, int]
+      for v in v:
+        ct[v[l2].toInt].inc
+      let s = ct.sum
+      for i in 0..1:
+        dp2[i].min=dp[i] + s - ct.max
+      swap(dp, dp2)
+    return dp[1]
+  proc calc(v:seq[string], level:int) =
+    let l = v[0].len
+    if level == K:
+      let r = make_level0(v)
+      if r == int.inf: ans = -1
+      else:
+        ans += r
+      return
+    if l == 0:
+      ans = -1
+      return
+    let l2 = l div 2
+    var p = l2
+    if l mod 2 == 1:
+      p.inc
+      var ct:array[26, int]
+      for v in v:
+        ct[v[l2].toInt].inc
+      let s = ct.sum
+      ans += s - ct.max
+    var v2 = Seq[string]
+    for v in v:
+      v2.add(v[0..<l2])
+      let s = v[p..<p+l2].reversed.join("")
+      v2.add(s)
+    calc(v2, level + 1)
+  calc(@[S], 0)
+  echo if ans == -1: NO else: ans.toStr
+  return
+
+# input part {{{
+block:
+  var K = nextInt()
+  var S = nextString()
+  solve(K, S)
+#}}}
+

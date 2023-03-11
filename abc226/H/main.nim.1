@@ -1,0 +1,71 @@
+const
+  DO_CHECK = true
+  DEBUG = false
+  DO_TEST = false
+
+include lib/header/chaemon_header
+import atcoder/modint
+#import lib/math/polynomial
+import lib/math/ntt
+import lib/math/formal_power_series
+
+#type poly = poly
+
+type mint = modint998244353
+
+solveProc solve(N:int, K:int, L:seq[int], R:seq[int]):
+  var p:seq[mint]
+  var d = mint(1)
+  for i in N: d *= R[i] - L[i]
+  var a = @[L.min, R.max]
+  for i in N:
+    a.add L[i]
+    a.add R[i]
+  a.sort
+  a = a.deduplicate(isSorted = true)
+  var x = initVar[mint]()
+  var ans = mint(0)
+  for t in a.len - 1:
+    # x in a[t] .. a[t + 1]
+    # K番目がx以上になる確率を計算(x以上がK個以上出る)
+    var dp = Seq[N + 1:poly[mint]] # x以上が出た個数
+    dp[0] = @[mint(1)]
+    for j in N:
+      var dp2 = Seq[N + 1:poly[mint]]
+      let d = R[j] - L[j]
+      if a[t + 1] <= L[j]: # 必ずx以上
+        for i in 0..<N:
+          dp2[i + 1] = d * dp[i]
+      elif R[j] <= a[t]: # 必ずx未満
+        for i in 0..N:
+          dp2[i] = dp[i] * d
+      else: # e in L[j] .. R[j]
+        for i in 0..N:
+          if i + 1 <= N:
+            dp2[i + 1] += dp[i] * (-x + R[j])
+          dp2[i] += dp[i] * (x - L[j])
+      swap dp, dp2
+    # integral a[t]..a[t + 1] 
+    var F:poly[mint]
+    for i in K..N:
+      F += dp[i]
+    var F2 = F * -x
+    var F3 = F.integral
+    ans += F2(a[t + 1]) - F2(a[t])
+    ans += F3(a[t + 1]) - F3(a[t])
+  ans /= d
+  echo ans
+  return
+
+when not DO_TEST:
+  var N = nextInt()
+  var K = nextInt()
+  var L = newSeqWith(N, 0)
+  var R = newSeqWith(N, 0)
+  for i in 0..<N:
+    L[i] = nextInt()
+    R[i] = nextInt()
+  solve(N, K, L, R)
+else:
+  discard
+

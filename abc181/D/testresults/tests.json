@@ -1,0 +1,3 @@
+[
+{"name":"tests/test.nim C","category":"tests","target":"C","action":"run","result":"reSuccess","expected":"","given":"","machine":"chaemon-pc","commit":"not a git r","branch":"fatal: not a git repository (or any of the parent directories): .git"},
+{"name":"tests/test.nim C++","category":"tests","target":"C++","action":"run","result":"reSuccess","expected":"","given":"","machine":"chaemon-pc","commit":"not a git r","branch":"fatal: not a git repository (or any of the parent directories): .git"}]

@@ -1,0 +1,13 @@
+{
+ "code_filename": "main.nim",
+ "lang": "nim",
+ "problem": {
+  "alphabet": "C",
+  "contest": {
+   "contest_id": "tenka1-2016-quala"
+  },
+  "problem_id": "tenka1_2016_qualA_c"
+ },
+ "sample_in_pattern": "in_*.txt",
+ "sample_out_pattern": "out_*.txt"
+}

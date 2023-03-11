@@ -1,0 +1,194 @@
+#{{{ header
+{.hints:off warnings:off optimization:speed.}
+import algorithm, sequtils, tables, macros, math, sets, strutils, sugar
+when defined(MYDEBUG):
+  import header
+
+import streams
+proc scanf(formatstr: cstring){.header: "<stdio.h>", varargs.}
+#proc getchar(): char {.header: "<stdio.h>", varargs.}
+proc nextInt(): int = scanf("%lld",addr result)
+proc nextFloat(): float = scanf("%lf",addr result)
+proc nextString[F](f:F): string =
+  var get = false
+  result = ""
+  while true:
+#    let c = getchar()
+    let c = f.readChar
+    if c.int > ' '.int:
+      get = true
+      result.add(c)
+    elif get: return
+proc nextInt[F](f:F): int = parseInt(f.nextString)
+proc nextFloat[F](f:F): float = parseFloat(f.nextString)
+proc nextString():string = stdin.nextString()
+
+template `max=`*(x,y:typed):void = x = max(x,y)
+template `min=`*(x,y:typed):void = x = min(x,y)
+template inf(T): untyped = 
+  when T is SomeFloat: T(Inf)
+  elif T is SomeInteger: ((T(1) shl T(sizeof(T)*8-2)) - (T(1) shl T(sizeof(T)*4-1)))
+  else: assert(false)
+
+proc discardableId[T](x: T): T {.discardable.} =
+  return x
+macro `:=`(x, y: untyped): untyped =
+  if (x.kind == nnkIdent):
+    return quote do:
+      when declaredInScope(`x`):
+        `x` = `y`
+      else:
+        var `x` = `y`
+      discardableId(`x`)
+  else:
+    return quote do:
+      `x` = `y`
+      discardableId(`x`)
+
+proc toStr[T](v:T):string =
+  proc `$`[T](v:seq[T]):string =
+    v.mapIt($it).join(" ")
+  return $v
+
+proc print0(x: varargs[string, toStr]; sep:string):string{.discardable.} =
+  result = ""
+  for i,v in x:
+    if i != 0: addSep(result, sep = sep)
+    add(result, v)
+  result.add("\n")
+  stdout.write result
+
+var print:proc(x: varargs[string, toStr])
+print = proc(x: varargs[string, toStr]) =
+  discard print0(@x, sep = " ")
+
+template SeqImpl(lens: varargs[int]; init; d: int): untyped =
+  when d + 1 == lens.len:
+    when init is typedesc: newSeq[init](lens[d])
+    else: newSeqWith(lens[d], init)
+  else: newSeqWith(lens[d], SeqImpl(lens, init, d + 1))
+
+template Seq(lens: varargs[int]; init): untyped = SeqImpl(lens, init, 0)
+
+template ArrayImpl(lens: varargs[int]; init: typedesc; d: int): typedesc =
+  when d + 1 == lens.len: array[lens[d], init]
+  else: array[lens[d], ArrayImpl(lens, init, d + 1)]
+
+template ArrayFill(a, val): void =
+  when a is array:
+    for v in a.mitems: ArrayFill(v, val)
+  else:
+    a = val
+
+template Array(lens: varargs[int]; init): auto =
+  when init is typedesc:
+    ArrayImpl(@lens, init, 0).default
+  else:
+    var a:ArrayImpl(@lens, typeof(init), 0)
+    ArrayFill(a, init)
+    a
+#}}}
+
+# dump {{{
+import macros
+
+macro dump*(n: varargs[untyped]): untyped =
+  result = newNimNode(nnkStmtList, n)
+  for i,x in n:
+    result.add(newCall("write", newIdentNode("stderr"), toStrLit(x)))
+    result.add(newCall("write", newIdentNode("stderr"), newStrLitNode(" = ")))
+    result.add(newCall("write", newIdentNode("stderr"), x))
+    if i < n.len - 1: result.add(newCall("write", newIdentNode("stderr"), newStrLitNode(", ")))
+  result.add(newCall("write", newIdentNode("stderr"), newStrLitNode("\n")))
+# }}}
+
+#{{{ default-table
+proc getDefault(T:typedesc): T =
+  when T is string: ""
+  elif T is seq: @[]
+  else:
+    (var temp:T;temp)
+
+proc getDefault[T](x:T): T = getDefault(T)
+
+import tables
+
+proc `[]`[A, B](self: var Table[A, B], key: A): var B =
+#  discard self.hasKeyOrPut(key, getDefault(B))
+  discard self.hasKeyOrPut(key, B.inf)
+  tables.`[]`(self, key)
+#}}}
+
+import hashes
+
+#import deques
+import heapqueue
+
+let H, W, K = nextInt()
+let x1, y1, x2, y2 = nextInt() - 1
+let c = newSeqWith(H, nextString())
+
+type P = tuple[x, y, dir:int]
+type S = tuple[p:P, d:int]
+
+proc `<`(l,r:S):bool = l.d < r.d
+
+let dir:array[4, tuple[x,y:int]] = [(0,1),(1,0),(0,-1),(-1,0)]
+
+import strformat
+
+macro `[]`(a: untyped, p: tuple): untyped =
+  var strBody = fmt"{a.repr}"
+  for i, _ in p.getTypeImpl: strBody &= fmt"[{p.repr}[{i}]]"
+  parseStmt(strBody)
+macro `[]=`(a: untyped, p: tuple, x: untyped): untyped =
+  var strBody = fmt"{a.repr}"
+  for i, _ in p.getTypeImpl: strBody &= fmt"[{p.repr}[{i}]]"
+  strBody &= fmt" = {x.repr}"
+  parseStmt(strBody)
+
+var
+  dist = Seq(H, W, 4, int.inf)
+  vis = Seq(H, W, 4, false)
+  Q = initHeapQueue[S]()
+
+proc set_push(p:P, d:int) =
+  if vis[p] or dist[p] <= d: return
+  dist[p] = d
+  Q.push((p, d))
+
+for i in 0..<4:
+  let p:P = (x1,y1,i)
+  set_push(p, 0)
+
+while Q.len > 0:
+  let (p, d) = Q.pop()
+  if vis[p]: continue
+  vis[p] = true
+  let (x, y, di) = p
+  block:
+    let
+      x2 = x + dir[di].x
+      y2 = y + dir[di].y
+    if x2 in 0..<H and y2 in 0..<W and c[x2][y2] != '@':
+      var d2 = d
+      d2.inc
+      let p2:P = (x2, y2, di)
+      set_push(p2, d2)
+  for di2 in 0..<4:
+    if di2 == di: continue
+    let d2 = ((d + K - 1) div K) * K
+    set_push((x,y,di2),d2)
+
+ans := int.inf
+
+for p in 0..<4:
+  d := dist[(x2,y2,p)]
+  if d == int.inf: continue
+  ans.min=(d + K - 1) div K
+
+if ans == int.inf:
+  print -1
+else:
+  print ans
+

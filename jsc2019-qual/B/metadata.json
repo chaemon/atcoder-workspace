@@ -1,0 +1,13 @@
+{
+ "code_filename": "main.nim",
+ "lang": "nim",
+ "problem": {
+  "alphabet": "B",
+  "contest": {
+   "contest_id": "jsc2019-qual"
+  },
+  "problem_id": "jsc2019_qual_b"
+ },
+ "sample_in_pattern": "in_*.txt",
+ "sample_out_pattern": "out_*.txt"
+}

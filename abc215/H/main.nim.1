@@ -1,0 +1,73 @@
+const
+  DO_CHECK = true
+  DEBUG = true
+  DO_TEST = false
+include lib/header/chaemon_header
+
+import lib/other/bitutils
+import lib/math/combination
+
+import atcoder/modint
+const MOD = 998244353
+type mint = modint998244353
+
+import lib/math/zeta_transform
+
+solveProc solve(N:int, M:int, A:seq[int], B:seq[int], c:seq[seq[int]]):
+  var a = Seq[2^N: 0]
+  for j in M:
+    var b = 0
+    for i in N:
+      if c[i][j] == 1:
+        # i から jへ出荷できる
+        b[i] = 1
+    a[b] += B[j]
+  a = a.zeta_transform(true)
+  var f = Seq[a.len:int.inf]
+  for b in 0..<a.len:
+    let S = a[b] # 品種の集合bから出荷できる会社の総和
+    var AS = 0 # bに属する品種の供給量の和
+    for i in N:
+      if b[i]: AS += A[i]
+    # S > ASにすればよい
+    if S > AS: # 最初からS > ASなら不可能
+      echo 0, " ", 1;return
+    # S <= AS
+    if S > 0:
+      f[b] = AS - S + 1
+  var m = int.inf
+  for b in 0..<a.len: m.min=f[b]
+  var p = Seq[a.len:0]
+  for b in 0..<a.len:
+    if m == f[b]:
+      p[b].inc
+  p = p.zeta_transform(false)
+  var h2 = Seq[a.len:mint(0)]
+
+  for b in 0..<a.len:
+    var S = 0
+    for i in N:
+      if b[i]:
+        S += A[i]
+    h2[b] = mint.C(S, m)
+  var h = h2.movius_transform(true)
+  var ans = mint(0)
+  for b in 0..<a.len:
+    if p[b] > 0: ans += h[b]
+
+  echo m, " ", ans
+#  echo ans
+#  ans = ans.movius_transform(true)
+#  echo ans
+#  echo m, " ", ans.sum
+  return
+
+
+when not DO_TEST:
+  var N = nextInt()
+  var M = nextInt()
+  var A = newSeqWith(N, nextInt())
+  var B = newSeqWith(M, nextInt())
+  var c = newSeqWith(N, newSeqWith(M, nextInt()))
+  solve(N, M, A, B, c)
+

@@ -1,0 +1,24 @@
+const
+  DO_CHECK = true
+  DEBUG = true
+  DO_TEST = false
+
+include lib/header/chaemon_header
+
+
+# Failed to predict input format
+
+solveProc solve():
+  let N = nextInt()
+  var v = initSet[seq[int]]()
+  for _ in N:
+    let L = nextInt()
+    var a = newSeqWith(L, nextInt())
+    v.incl a
+  echo v.len
+  discard
+
+block main:
+  solve()
+  discard
+

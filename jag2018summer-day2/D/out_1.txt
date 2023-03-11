@@ -1,0 +1,61 @@
+class Crypto {
+    public Crypto() {
+        sm = cnt = 0;
+        data = new byte[256];
+        seed();
+    }
+
+    public int decode(int z) {
+        z ^= next();
+        z ^= (next() << 8);
+        z ^= (next() << 16);
+        z ^= (next() << 22);
+        return z;
+    }
+
+    public void query(long z) {
+        const long B = 425481007;
+        const long MD = 1000000007;
+        cnt++;
+        sm = ((sm * B % MD + z) % MD + MD) % MD;
+        seed();
+    }
+
+    long sm;
+    int cnt;
+
+    byte[] data;
+    int I, J;
+
+    void seed() {
+        byte[] key = new byte[8];
+        for (int i = 0; i < 4; i++) {
+            key[i] = (byte)(sm >> (i*8));
+        }
+        for (int i = 0; i < 4; i++) {
+            key[i+4] = (byte)(cnt >> (i*8));
+        }
+
+        for (int i = 0; i < 256; i++) {
+            data[i] = (byte)i;
+        }
+        I = J = 0;
+
+        int j = 0;
+        for (int i = 0; i < 256; i++) {
+            j = (j + data[i] + key[i%8]) % 256;
+            byte tmp = data[i];
+            data[i] = data[j];
+            data[j] = tmp;
+        }
+    }
+
+    byte next() {
+        I = (I+1) % 256;
+        J = (J + data[I]) % 256;
+        byte tmp = data[I];
+        data[I] = data[J];
+        data[J] = tmp;
+        return data[(data[I] + data[J]) % 256];
+    }
+}

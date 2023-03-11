@@ -1,0 +1,25 @@
+include atcoder/extra/header/chaemon_header
+
+
+const DEBUG = true
+
+proc solve(N:int, M:int, A:seq[int], B:seq[int]) =
+  var a = Seq[1001:0]
+  for i in 0..<N:a[A[i]].inc
+  for i in 0..<M:a[B[i]].inc
+  ans := Seq[int]
+  for i in 0..<a.len:
+    if a[i] == 1:
+      ans.add i
+  echo ans.join(" ")
+  return
+
+# input part {{{
+block:
+  var N = nextInt()
+  var M = nextInt()
+  var A = newSeqWith(N, nextInt())
+  var B = newSeqWith(M, nextInt())
+  solve(N, M, A, B)
+#}}}
+

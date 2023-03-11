@@ -1,0 +1,25 @@
+const
+  DO_CHECK = true
+  DEBUG = true
+  DO_TEST = false
+  USE_DEFAULT_TABLE = true
+
+include lib/header/chaemon_header
+
+
+solveProc solve(N:int, Q:int, a:seq[int], x:seq[int], k:seq[int]):
+  discard
+
+when not DO_TEST:
+  var N = nextInt()
+  var Q = nextInt()
+  var a = newSeqWith(N, nextInt())
+  var x = newSeqWith(Q, 0)
+  var k = newSeqWith(Q, 0)
+  for i in 0..<Q:
+    x[i] = nextInt()
+    k[i] = nextInt()
+  solve(N, Q, a, x, k)
+else:
+  discard
+

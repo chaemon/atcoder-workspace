@@ -1,0 +1,30 @@
+#include <cstdio>
+#include <cstdlib>
+#include <cstdint> //uint8_t, uint32_t
+
+class Crypto {
+    ...
+};
+
+int main() {
+    int MOD, Q;
+    scanf("%d %d", &MOD, &Q);
+    Crypto c;
+    for (int i = 0; i < Q; i++) {
+        int t, w, v, l, r;
+        scanf("%d %d %d %d %d", &t, &w, &v, &l, &r);
+        t = c.decode(t);
+        w = c.decode(w);
+        v = c.decode(v);
+        l = c.decode(l);
+        r = c.decode(r);
+        if (t == 1) {
+            (add candy(w, v))
+        } else {
+            (delete candy)
+        }
+        long long ans = (answer for query(l, r));
+        c.query(ans);
+        printf("%lld\n", ans);
+    }
+}

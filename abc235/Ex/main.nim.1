@@ -1,0 +1,151 @@
+const
+  DO_CHECK = true
+  DEBUG = true
+  DO_TEST = false
+  USE_DEFAULT_TABLE = true
+
+include lib/header/chaemon_header
+import deques
+import atcoder/dsu, atcoder/convolution
+import lib/other/bitutils
+import lib/graph/graph_template
+import random
+
+import atcoder/modint
+const MOD = 998244353
+type mint = modint998244353
+
+solveProc solve(N:int, M:int, K:int, A:seq[int], B:seq[int], C:seq[int]):
+  proc convolute_all(a:seq[seq[mint]]):seq[mint] =
+    var d = initDeque[seq[mint]]()
+    for a in a: d.addLast(a)
+    while d.len >= 2:
+      v := d[0].convolution(d[1])
+      if v.len > K + 1: v = v[0 .. K]
+      d.addLast v
+      discard d.popFirst
+      discard d.popFirst
+    return d[0]
+  var
+    v = Seq[tuple[C, A, B:int]]
+    dsu = initDSU(N)
+    dp = Seq[N: @[mint(1), mint(1)]]
+  for i in M:
+    v.add (C[i], A[i], B[i])
+  v.sort()
+  i := 0
+  while i < M:
+    j := i
+    while j < M and v[i].C == v[j].C: j.inc
+    var merge_leader = initTable[int, seq[int]]()
+    for k in i ..< j:
+      let (C, A, B) = v[k]
+      la := dsu.leader(A)
+      lb := dsu.leader(B)
+      if la == lb: continue
+      if la notin merge_leader:
+        merge_leader[la] = @[la]
+      if lb notin merge_leader:
+        merge_leader[lb] = @[lb]
+    for k in i ..< j:
+      let (C, A, B) = v[k]
+      la := dsu.leader(A)
+      lb := dsu.leader(B)
+      if la == lb: continue
+      dsu.merge(la, lb)
+      l := dsu.leader(A)
+      # la, lb -> l
+      if merge_leader[la].len < merge_leader[lb].len:
+        swap la, lb
+      merge_leader[la] &= merge_leader[lb]
+      merge_leader[lb] = @[]
+      swap merge_leader[la], merge_leader[l]
+    for k, v in merge_leader:
+      if v.len == 0: continue
+      # v:seq[int]
+      # v -> k
+      var a:seq[seq[mint]]
+      for l in v: a.add dp[l]
+      dp[k] = convolute_all(a)
+      if dp[k].len >= a.len + 1:
+        doAssert dp[k][a.len].val >= 1
+        dp[k][a.len] -= 1
+      dp[k][1] += 1
+    i = j
+  var ans:seq[seq[mint]]
+  var found = initSet[int]()
+  for u in N:
+    var l = dsu.leader(u)
+    if l in found:
+      continue
+    found.incl l
+    ans.add dp[l]
+  var ans0 = ans.convolute_all()
+  var s = mint(0)
+  for k in 0..K:
+    if k >= ans0.len: continue
+    s += ans0[k]
+  echo s
+  Naive:
+    X := @[0]
+    g := initGraph[int](N)
+    for i in M:
+      X.add C[i]
+      g.addBiEdge(A[i], B[i], C[i])
+    proc dfs2(b, v, x:int):int =
+      b2 := b
+      proc dfs_impl(u, p:int) =
+        if b2[u] == 1: return
+        b2[u] = 1
+        for e in g[u]:
+          if e.dst == p or e.weight > x: continue
+          dfs_impl(e.dst, u)
+      dfs_impl(v, -1)
+      return b2
+    X.sort
+    X = X.deduplicate(isSorted = true)
+    var vis = Seq[2^N, K + 1: false]
+    proc dfs(b, k:int) =
+      if vis[b][k]: return
+      vis[b][k] = true
+      if k == K: return
+      for v in N:
+        for x in X:
+          var b2 = dfs2(0, v, x) or b
+          dfs(b2, k + 1)
+    dfs(0, 0)
+    ans := 0
+    for b in 2^N:
+      found := 0
+      for k in 0..K:
+        if vis[b][k]: found = 1
+      ans += found
+    echo ans
+  discard
+
+when not DO_TEST:
+  var N = nextInt()
+  var M = nextInt()
+  var K = nextInt()
+  var A = newSeqWith(M, 0)
+  var B = newSeqWith(M, 0)
+  var C = newSeqWith(M, 0)
+  for i in 0..<M:
+    A[i] = nextInt() - 1
+    B[i] = nextInt() - 1
+    C[i] = nextInt()
+  solve(N, M, K, A, B, C)
+  #test(N, M, K, A, B, C)
+else:
+  for _ in 100:
+    let
+      N = 10
+      M = 10
+      K = 5
+    var A, B, C = Seq[int]
+    for i in M:
+      A.add random.rand(0..<N)
+      B.add random.rand(0..<N)
+      C.add random.rand(1..9)
+    debug N, M, K, A, B, C
+    test(N, M, K, A, B, C)

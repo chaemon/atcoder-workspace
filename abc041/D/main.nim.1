@@ -1,0 +1,68 @@
+#{{{ header
+import algorithm, sequtils, tables, macros, math, sets, strutils, streams
+when defined(MYDEBUG):
+  import header
+
+proc scanf(formatstr: cstring){.header: "<stdio.h>", varargs.}
+proc getchar(): char {.header: "<stdio.h>", varargs.}
+proc nextInt(): int = scanf("%lld",addr result)
+proc nextFloat(): float = scanf("%lf",addr result)
+proc nextString(): string =
+  var get = false
+  result = ""
+  while true:
+    var c = getchar()
+    if int(c) > int(' '):
+      get = true
+      result.add(c)
+    else:
+      if get: break
+      get = false
+
+template `max=`*(x,y:typed):void = x = max(x,y)
+template `min=`*(x,y:typed):void = x = min(x,y)
+template infty(T): untyped = ((T(1) shl T(sizeof(T)*8-2)) - 1)
+#}}}
+
+#{{{ bitutils
+proc bit(n,d:int):uint =
+  if (n and (1 shl d)) == 0: 0 else: 1
+proc printBit(n,d:int = 32) =
+  for i in countdown(d-1,0): stdout.write bit(n,i)
+  echo ""
+#}}}
+
+proc solve(N:int, M:int, x:seq[int], y:seq[int]) =
+  var v = newSeqWith(N,newSeq[int]())
+  for i in 0..<M: v[y[i]].add(x[i])
+  let B = (1 shl N)
+  var dp = newSeqWith(B,0)
+  dp[0] = 1
+  for b in 0..<B:
+    for i in 0..<N:
+      if bit(b,i) == 0:# select i for the next
+        var valid = true
+        for x in v[i]:
+          if bit(b,x) == 0:
+            valid = false
+        if valid: dp[b or (1 shl i)] += dp[b]
+    discard
+  echo dp[B - 1]
+  return
+
+#{{{ main function
+proc main() =
+  var N = 0
+  N = nextInt()
+  var M = 0
+  M = nextInt()
+  var x = newSeqWith(M, 0)
+  var y = newSeqWith(M, 0)
+  for i in 0..<M:
+    x[i] = nextInt() - 1
+    y[i] = nextInt() - 1
+  solve(N, M, x, y)
+  return
+
+main()
+#}}}

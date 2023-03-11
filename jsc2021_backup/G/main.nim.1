@@ -1,0 +1,65 @@
+include atcoder/extra/header/chaemon_header
+
+import atcoder/modint
+const MOD = 1000000007
+type mint = modint1000000007
+
+const DEBUG = true
+
+import atcoder/dsu
+import atcoder/extra/math/matrix
+
+proc solve(N:int, A:seq[seq[int]]) =
+  var dsu = initDSU(N)
+  for u in 0..<N:
+    for v in u+1..<N:
+      if A[u][v] == 1:
+        if dsu.leader(u) == dsu.leader(v):
+          echo 0;return
+        dsu.merge(u, v)
+  var p = initTable[(int, int), int]()
+  for u in 0..<N:
+    for v in u + 1..<N:
+      var
+        lu = dsu.leader(u)
+        lv = dsu.leader(v)
+      if lu > lv: swap(lu, lv)
+      if A[u][v] == 0:
+        if (lu, lv) notin p: p[(lu, lv)] = 0
+        p[(lu, lv)].inc
+  let n = dsu.groups().len
+  var B = Seq[n, n: int]
+  var s = Seq[n: int]
+  if n == 1:
+    echo 1
+    return
+  for i,gu in dsu.groups():
+    for j,gv in dsu.groups():
+      if i == j: continue
+      var
+        lu = dsu.leader(gu[0])
+        lv = dsu.leader(gv[0])
+      if lu > lv: swap(lu, lv)
+      var t = 0
+      if (lu, lv) in p: t = p[(lu, lv)]
+      B[i][j] = gu.len * gv.len - t
+      s[i] += B[i][j]
+  var B2 = initMatrix[mint](n, n)
+  for i in 0..<n:
+    for j in 0..<n:
+      if i == j: B2[i][j] = s[i]
+      else: B2[i][j] = -B[i][j]
+  var B3 = initMatrix[mint](n - 1, n - 1)
+  for i in 0..<n-1:
+    for j in 0..<n-1:
+      B3[i][j] = B2[i][j]
+  echo B3.determinant
+  return
+
+# input part {{{
+block:
+  var N = nextInt()
+  var A = newSeqWith(N, newSeqWith(N, nextInt()))
+  solve(N, A)
+#}}}
+

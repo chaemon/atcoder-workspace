@@ -1,0 +1,21 @@
+include atcoder/extra/header/chaemon_header
+
+
+const DEBUG = true
+
+proc solve(A:int, B:int) =
+  for g in countdown(2 * 10^5, 1):
+    # g * k <= B
+    # A <= g * k
+    let kmax = B div g
+    if A <= (kmax - 1) * g:
+      echo g;return
+  return
+
+# input part {{{
+block:
+  var A = nextInt()
+  var B = nextInt()
+  solve(A, B)
+#}}}
+

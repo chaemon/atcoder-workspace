@@ -1,0 +1,77 @@
+import sequtils,algorithm
+proc scanf(formatstr: cstring){.header: "<stdio.h>", varargs.}
+proc getchar(): char {.header: "<stdio.h>", varargs.}
+proc nextInt(): int = scanf("%lld",addr result)
+proc nextFloat(): float = scanf("%lf",addr result)
+proc nextString(): string =
+  var get = false
+  result = ""
+  while true:
+    var c = getchar()
+    if int(c) > int(' '):
+      get = true
+      result.add(c)
+    else:
+      if get: break
+      get = false
+
+proc divs(n:int):seq[int] =
+  var d = 1
+  result = newSeq[int]()
+  while true:
+    if d * d > n: break
+    if n mod d == 0:
+      result.add d
+      if d * d < n: result.add n div d
+    d += 1
+  result.sort(cmp[int])
+
+proc solve(n:int, s:int):void =
+  proc calc(b:int):int =
+    var
+      m = n
+      d = 0
+    result = 0
+    while m > 0:
+      result += m mod b
+      m = m div b
+      d += 1
+  var b = 2
+  while true:
+    if b * b > n:
+      break
+    let t = calc(b)
+    if t == s:
+      echo b
+      return
+    b += 1
+  let T = n - s
+  if T < 0:
+    echo -1
+    return
+  elif T == 0: # n == s
+    echo n + 1
+    return
+  let ds = divs(T)
+  for d in ds:
+    let
+      b = d + 1
+      q = T div d
+    if b < 100000000 and b * b <= n: continue # already listed
+    if not (0 <= q and q < b): continue
+    let r = s - q
+    if not (0 <= r and r < b): continue
+    echo b
+    return
+  echo -1
+  return
+
+proc main():void =
+  var n = 0
+  n = nextInt()
+  var s = 0
+  s = nextInt()
+  solve(n, s);
+  return
+
+main()

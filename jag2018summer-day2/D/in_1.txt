@@ -1,0 +1,57 @@
+class Crypto {
+public:
+    this() {
+        sm = cnt = 0;
+        seed();
+    }
+
+    int decode(int z) {
+        z ^= next();
+        z ^= (next() << 8);
+        z ^= (next() << 16);
+        z ^= (next() << 22);
+        return z;
+    }
+
+    void query(long z) {
+        immutable static long B = 425481007;
+        immutable static long MD = (10^^9)+7;
+        cnt++;
+        sm = ((sm * B % MD + z) % MD + MD) % MD;
+        seed();
+    }
+private:
+    import std.algorithm : swap;
+    long sm;
+    int cnt;
+
+    ubyte[256] data;
+    int I, J;
+    void seed() {
+        ubyte[8] key;
+        foreach (i; 0..4) {
+            key[i] = cast(ubyte)(sm >> (i*8));
+        }
+        foreach (i; 0..4) {
+            key[i+4] = cast(ubyte)(cnt >> (i*8));
+        }
+
+        foreach (i; 0..256) {
+            data[i] = cast(ubyte)(i);
+        }
+        I = J = 0;
+
+        int j = 0;
+        foreach (int i; 0..256) {
+            j = (j + data[i] + key[i%8]) % 256;
+            swap(data[i], data[j]);
+        }        
+    }
+
+    ubyte next() {
+        I = (I+1) % 256;
+        J = (J + data[I]) % 256;
+        swap(data[I], data[J]);
+        return data[(data[I] + data[J]) % 256];
+    }
+}

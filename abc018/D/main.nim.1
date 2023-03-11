@@ -1,0 +1,117 @@
+#{{{ header
+{.hints:off checks:off.}
+import algorithm, sequtils, tables, macros, math, sets, strutils
+when defined(MYDEBUG):
+  import header
+
+proc scanf(formatstr: cstring){.header: "<stdio.h>", varargs.}
+proc getchar(): char {.header: "<stdio.h>", varargs.}
+proc nextInt(): int = scanf("%lld",addr result)
+proc nextFloat(): float = scanf("%lf",addr result)
+proc nextString(): string =
+  var get = false
+  result = ""
+  while true:
+    var c = getchar()
+    if int(c) > int(' '):
+      get = true
+      result.add(c)
+    else:
+      if get: break
+      get = false
+type someSignedInt = int|int8|int16|int32|int64|BiggestInt
+type someUnsignedInt = uint|uint8|uint16|uint32|uint64
+type someInteger = SomeSignedInt | SomeUnsignedInt
+type someFloat = float|float32|float64|BiggestFloat
+template `max=`*(x,y:typed):void = x = max(x,y)
+template `min=`*(x,y:typed):void = x = min(x,y)
+template inf(T): untyped = 
+  when T is someFloat: T(Inf)
+  elif T is someInteger|someUnsignedInt: ((T(1) shl T(sizeof(T)*8-2)) - (T(1) shl T(sizeof(T)*4-1)))
+  else: assert(false)
+
+proc sort[T](v: var seq[T]) = v.sort(cmp[T])
+
+proc discardableId[T](x: T): T {.discardable.} =
+  return x
+macro `:=`(x, y: untyped): untyped =
+  if (x.kind == nnkIdent):
+    return quote do:
+      when declaredInScope(`x`):
+        `x` = `y`
+      else:
+        var `x` = `y`
+      discardableId(`x`)
+  else:
+    return quote do:
+      `x` = `y`
+      discardableId(`x`)
+#}}}
+
+#{{{ bitutils
+proc bits[T](v:varargs[int]): T =
+  result = T(0)
+  for x in v: result = (result or (T(1) shl T(x)))
+proc `[]`[T:SomeInteger](b:T,n:int):int =
+  if (b and (T(1) shl T(n))) == 0: 0 else: 1
+proc test[T:SomeInteger](b:T,n:int):bool =
+  if b[n] == 1:true else: false
+proc set[T:SomeInteger](b:var T,n:int) = b = (b or (T(1) shl T(n)))
+proc unset[T:SomeInteger](b:var T,n:int) = b = (b and (not (T(1) shl T(n))))
+proc `[]=`[T:SomeInteger](b:var T,n:int,t:int) =
+  if t == 0: b.unset(n)
+  elif t == 1: b.set(n)
+  else: assert(false)
+proc writeBits[T:SomeInteger](b:T,n:int = 64) =
+  for i in countdown(n-1,0):stdout.write(b[i])
+  echo ""
+proc setBits(n:int):uint64 =
+  if n == 64: (not 0'u64)
+  else: (1'u64 shl uint64(n)) - 1'u64
+#}}}
+
+proc solve(N:int, M:int, P:int, Q:int, R:int, x:seq[int], y:seq[int], z:seq[int]) =
+
+  var ans = 0
+  for b in 0..<2^N:
+    var girl = 0
+    for i in 0..<N:
+      if b[i] == 1: girl += 1
+    if girl != P: continue
+    var happiness = newSeq[int](M)
+    for i in 0..<R:
+      if b[x[i]] == 0: continue
+      happiness[y[i]] += z[i]
+    happiness.sort(cmp[int])
+    happiness.reverse()
+    var s = 0
+    for i in 0..<Q:
+      s += happiness[i]
+    ans.max = s
+  echo ans
+  return
+
+#{{{ main function
+proc main() =
+  var N = 0
+  N = nextInt()
+  var M = 0
+  M = nextInt()
+  var P = 0
+  P = nextInt()
+  var Q = 0
+  Q = nextInt()
+  var R = 0
+  R = nextInt()
+  var x = newSeqWith(R, 0)
+  var y = newSeqWith(R, 0)
+  var z = newSeqWith(R, 0)
+  for i in 0..<R:
+    x[i] = nextInt() - 1
+    y[i] = nextInt() - 1
+    z[i] = nextInt()
+  solve(N, M, P, Q, R, x, y, z);
+  return
+
+main()
+#}}}

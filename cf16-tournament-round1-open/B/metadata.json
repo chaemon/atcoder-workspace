@@ -1,0 +1,13 @@
+{
+ "code_filename": "main.cpp",
+ "lang": "cpp",
+ "problem": {
+  "alphabet": "B",
+  "contest": {
+   "contest_id": "cf16-tournament-round1-open"
+  },
+  "problem_id": "asaporo_f"
+ },
+ "sample_in_pattern": "in_*.txt",
+ "sample_out_pattern": "out_*.txt"
+}

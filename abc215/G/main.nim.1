@@ -1,0 +1,35 @@
+const
+  DO_CHECK = true
+  DEBUG = true
+  DO_TEST = false
+include lib/header/chaemon_header
+
+import atcoder/extra/math/ntt
+import atcoder/extra/math/formal_power_series
+import atcoder/extra/math/combination
+import atcoder/extra/math/polynomial_taylor_shift
+
+import atcoder/modint
+const MOD = 998244353
+type mint = modint998244353
+
+solveProc solve(N:int, c:seq[int]):
+  var ct = initTable[int, int]()
+  for c in c:
+    if c notin ct: ct[c] = 0
+    ct[c].inc
+  var x = initVar[mint]()
+  var v = 0 * x
+#  var v = initFormalPowerSeries[mint](@[0])
+  for c, t in ct:
+    v += x ^ N - x ^ (N - t)
+  let w = v.taylor_shift(1)
+  for K in 1..N:
+    echo w[K] / mint.C(N, K)
+  return
+
+
+when not DO_TEST:
+  var N = nextInt()
+  var c = newSeqWith(N, nextInt())
+  solve(N, c)

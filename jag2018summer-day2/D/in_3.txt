@@ -1,0 +1,27 @@
+class Crypto {
+    ...
+}
+int main() {
+    import std.stdio;
+    int MOD, Q;
+    readf("%d\n%d\n", &MOD, &Q);
+    Crypto c = new Crypto();
+    foreach (i; 0..Q) {
+        int t, w, v, l, r;
+        readf("%d %d %d %d %d\n", &t, &w, &v, &l, &r);
+        t = c.decode(t);
+        w = c.decode(w);
+        v = c.decode(v);
+        l = c.decode(l);
+        r = c.decode(r);
+        if (t == 1) {
+            (add candy(w, v))
+        } else {
+            (delete candy)
+        }
+        long ans = (answer for query(l, r));
+        c.query(ans);
+        writeln(ans);
+    }
+    return 0;
+}

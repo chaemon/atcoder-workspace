@@ -1,0 +1,24 @@
+const
+  DO_CHECK = true
+  DEBUG = true
+  DO_TEST = false
+include atcoder/extra/header/chaemon_header
+
+
+import atcoder/modint
+const MOD = 1000000007
+type mint = modint1000000007
+
+type P = tuple[v:int, c:mint]
+
+solveProc solve(N:int, H:seq[int]):
+  var 
+  return
+
+# input part {{{
+when not DO_TEST:
+  var N = nextInt()
+  var H = newSeqWith(N, nextInt())
+  solve(N, H)
+#}}}
+

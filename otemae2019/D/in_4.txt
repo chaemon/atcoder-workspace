@@ -1,0 +1,6 @@
+10 5
+Fizz
+FizzBuzz
+Fizz
+Buzz
+FizzBuzz
