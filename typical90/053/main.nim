@@ -4,7 +4,7 @@ const
   DO_TEST = false
 include atcoder/extra/header/chaemon_header
 
-solveProc solve(T:int):
+solveProc solve():
   let N = nextInt()
   var f = @[0, 1, 1]
   while true:
@@ -55,9 +55,7 @@ solveProc solve(T:int):
   flushFile(stdout)
   return
 
-# input part {{{
 when not DO_TEST:
   var T = nextInt()
-  solve(T)
-#}}}
-
+  for _ in T:
+    solve()

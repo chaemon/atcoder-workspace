@@ -9,6 +9,11 @@ include lib/header/chaemon_header
 
 
 solveProc solve(N:int, X:int, A:seq[int]):
+  ans := 0
+  for i in N:
+    if A[i] == X:
+      ans.inc
+  echo ans
   discard
 
 when not defined(DO_TEST):

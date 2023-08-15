@@ -44,7 +44,8 @@ solveProc solve(N:int, Q:int, a:seq[int], b:seq[int], c:seq[int], d:seq[int], e:
   # Step 4: 連立方程式を解く
   var
     id = initTable[(int, int), int]()
-    di = newSeq[(int, int)]()
+    di = Seq[(int, int)]
+    #di = newSeq[(int, int)]()
     A = Seq[0:BitSet[B]]
   for i in Q:
     if e[i] == 0: continue

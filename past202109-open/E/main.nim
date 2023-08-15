@@ -7,8 +7,23 @@ const
 
 include lib/header/chaemon_header
 
-
 solveProc solve(N:int, K:int, c:seq[int], p:seq[int]):
+  var v = initTable[int, int]()
+  for i in N:
+    if c[i] notin v:
+      v[c[i]] = p[i]
+    else:
+      v[c[i]].min=p[i]
+  if v.len < K:
+    echo -1;return
+  var w = @((int, int))
+  for k, v in v:
+    w.add (v, k)
+  w.sort
+  ans := 0
+  for i in K:
+    ans += w[i][0]
+  echo ans
   discard
 
 when not defined(DO_TEST):

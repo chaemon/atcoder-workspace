@@ -23,8 +23,8 @@ solveProc solve(N:int, S:string):
       of 'D': y.dec
       else: doAssert false
     if (x, y) in hist: echo YES;return
+    hist.incl((x, y))
   echo NO;return
-  discard
 
 when not defined(DO_TEST):
   var N = nextInt()

@@ -4,12 +4,25 @@ const
   DO_TEST = false
 include atcoder/extra/header/chaemon_header
 
-
-
 solveProc solve(N:int, Q:int, A:seq[int], T:seq[int], x:seq[int], y:seq[int]):
+  Pred x, y
+  var
+    A = A
+    s = 0
+  for q in Q:
+    if T[q] == 1:
+      let
+        x = (x[q] - s).floorMod N
+        y = (y[q] - s).floorMod N
+      swap A[x], A[y]
+    elif T[q] == 2:
+      s.inc
+    elif T[q] == 3:
+      let
+        x = (x[q] - s).floorMod N
+      echo A[x]
   return
 
-# input part {{{
 when not DO_TEST:
   var N = nextInt()
   var Q = nextInt()
@@ -22,5 +35,3 @@ when not DO_TEST:
     x[i] = nextInt()
     y[i] = nextInt()
   solve(N, Q, A, T, x, y)
-#}}}
-
