@@ -10,6 +10,15 @@ const
 include lib/header/chaemon_header
 
 solveProc solve(N:int, A:seq[int]):
+  Pred A
+  var v = Seq[N: seq[int]]
+  for i in 3 * N:
+    v[A[i]].add i
+  var ans = (0 ..< N).toSeq
+  ans.sort do (i, j:int) -> int:
+    cmp(v[i][1], v[j][1])
+  for i in ans.mitems:i.inc
+  echo ans.join(" ")
   discard
 
 when not defined(DO_TEST):

@@ -1,0 +1,17 @@
+{
+ "code_filename": "main.nim",
+ "judge": {
+  "judge_type": "normal"
+ },
+ "lang": "nim",
+ "problem": {
+  "alphabet": "P",
+  "contest": {
+   "contest_id": "nadafes2022_day1"
+  },
+  "problem_id": "nadafes2022_day1_p"
+ },
+ "sample_in_pattern": "in_*.txt",
+ "sample_out_pattern": "out_*.txt",
+ "timeout_ms": 8000
+}

@@ -5,11 +5,20 @@ const
 include atcoder/extra/header/chaemon_header
 
 
-import atcoder/modint
-const MOD = 7
-type mint = modint7
-
 solveProc solve(N:int, P:int, Q:int, A:seq[int]):
+  ans := 0
+  for i in N:
+    var p = A[i]
+    for j in i + 1 ..< N:
+      var p = (p * A[j]) mod P
+      for k in j + 1 ..< N:
+        var p = (p * A[k]) mod P
+        for l in k + 1 ..< N:
+          var p = (p * A[l]) mod P
+          for m in l + 1 ..< N:
+            var p = (p * A[m]) mod P
+            if p == Q: ans.inc
+  echo ans
   return
 
 # input part {{{

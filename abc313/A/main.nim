@@ -10,6 +10,10 @@ const
 include lib/header/chaemon_header
 
 solveProc solve(N:int, P:seq[int]):
+  var ans = 0
+  for i in 1 ..< N:
+    ans.max=P[i] + 1 - P[0]
+  echo ans
   discard
 
 when not defined(DO_TEST):

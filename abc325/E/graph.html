@@ -1,0 +1,47 @@
+<html>
+<head>
+    <script type="text/javascript" src="https://unpkg.com/vis-network/standalone/umd/vis-network.min.js"></script>
+
+    <style type="text/css">
+        #mynetwork {
+            width: 1800px;
+            height:900px;
+            border: 1px solid lightgray;
+        }
+    </style>
+</head>
+<body>
+<div id="mynetwork"></div>
+
+<script type="text/javascript">
+    // create an array with nodes
+    var nodes = new vis.DataSet([
+        {id: 0, label: '(0, 0)'},{id: 1, label: '(0, 1)'},{id: 2, label: '(0, 2)'},{id: 3, label: '(0, 3)'},{id: 4, label: '(0, 4)'},{id: 5, label: '(1, 0)'},{id: 6, label: '(1, 1)'},{id: 7, label: '(1, 2)'},{id: 8, label: '(1, 3)'},{id: 9, label: '(1, 4)'}
+    ]);
+
+    // create an array with edges
+    var edges = new vis.DataSet([
+        {from: 0, to: 1, arrows: 'to', label: '80397106507' },{from: 0, to: 2, arrows: 'to', label: '204715799953' },{from: 0, to: 3, arrows: 'to', label: '9558792369' },{from: 0, to: 4, arrows: 'to', label: '356264216894' },{from: 0, to: 5, arrows: 'to', label: '0' },{from: 1, to: 0, arrows: 'to', label: '80397106507' },{from: 1, to: 2, arrows: 'to', label: '87721028982' },{from: 1, to: 3, arrows: 'to', label: '30856854352' },{from: 1, to: 4, arrows: 'to', label: '156934243449' },{from: 1, to: 6, arrows: 'to', label: '0' },{from: 2, to: 0, arrows: 'to', label: '204715799953' },{from: 2, to: 1, arrows: 'to', label: '87721028982' },{from: 2, to: 3, arrows: 'to', label: '103931946898' },{from: 2, to: 4, arrows: 'to', label: '55119792834' },{from: 2, to: 7, arrows: 'to', label: '0' },{from: 3, to: 0, arrows: 'to', label: '9558792369' },{from: 3, to: 1, arrows: 'to', label: '30856854352' },{from: 3, to: 2, arrows: 'to', label: '103931946898' },{from: 3, to: 4, arrows: 'to', label: '223968889185' },{from: 3, to: 8, arrows: 'to', label: '0' },{from: 4, to: 0, arrows: 'to', label: '356264216894' },{from: 4, to: 1, arrows: 'to', label: '156934243449' },{from: 4, to: 2, arrows: 'to', label: '55119792834' },{from: 4, to: 3, arrows: 'to', label: '223968889185' },{from: 4, to: 9, arrows: 'to', label: '0' },{from: 5, to: 6, arrows: 'to', label: '80394213677' },{from: 5, to: 7, arrows: 'to', label: '204707174891' },{from: 5, to: 8, arrows: 'to', label: '9559165835' },{from: 5, to: 9, arrows: 'to', label: '356248604060' },{from: 6, to: 5, arrows: 'to', label: '80394213677' },{from: 6, to: 7, arrows: 'to', label: '87717798452' },{from: 6, to: 8, arrows: 'to', label: '30856245782' },{from: 6, to: 9, arrows: 'to', label: '156927821555' },{from: 7, to: 5, arrows: 'to', label: '204707174891' },{from: 7, to: 6, arrows: 'to', label: '87717798452' },{from: 7, to: 8, arrows: 'to', label: '103927968896' },{from: 7, to: 9, arrows: 'to', label: '55118065520' },{from: 8, to: 5, arrows: 'to', label: '9559165835' },{from: 8, to: 6, arrows: 'to', label: '30856245782' },{from: 8, to: 7, arrows: 'to', label: '103927968896' },{from: 8, to: 9, arrows: 'to', label: '223959376379' },{from: 9, to: 5, arrows: 'to', label: '356248604060' },{from: 9, to: 6, arrows: 'to', label: '156927821555' },{from: 9, to: 7, arrows: 'to', label: '55118065520' },{from: 9, to: 8, arrows: 'to', label: '223959376379' }
+    ]);
+
+    // create a network
+    var container = document.getElementById('mynetwork');
+
+    // provide the data in the vis format
+    var data = {
+        nodes: nodes,
+        edges: edges
+    };
+    var options = {
+        physics: {
+            barnesHut: {
+                avoidOverlap: 0.3
+            }
+        }
+    };
+
+    // initialize your network!
+    var network = new vis.Network(container, data, options);
+</script>
+</body>
+</html>
