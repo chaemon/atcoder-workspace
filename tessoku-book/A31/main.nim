@@ -10,6 +10,7 @@ const
 include lib/header/chaemon_header
 
 solveProc solve(N:int):
+  echo N div 3 + N div 5 - N div 15
   discard
 
 when not defined(DO_TEST):

@@ -14,7 +14,7 @@ import atcoder/modint
 const MOD = 998244353
 type mint = modint998244353
 
-const AMAX = 21
+const AMAX = 100
 # a > b
 
 solveProc solve(N:int, X:int):
@@ -111,7 +111,8 @@ solveProc solve(N:int, X:int):
     for b in bmin .. min(9, bmax):
       ans += b
     if 10 <= bmax:
-      ans += (bmax - 10 + 1) * 10
+      var l = max(10, bmin)
+      ans += (bmax - l + 1) * 10
   echo ans
   discard
 

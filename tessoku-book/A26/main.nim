@@ -9,9 +9,17 @@ const
 
 include lib/header/chaemon_header
 
+import atcoder/extra/math/eratosthenes
+
 const YES = "Yes"
 const NO = "No"
 solveProc solve(Q:int, X:seq[int]):
+  var es = initEratosthenes()
+  for i in Q:
+    if es.isPrime(X[i]):
+      echo YES
+    else:
+      echo NO
   discard
 
 when not defined(DO_TEST):

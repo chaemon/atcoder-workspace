@@ -10,6 +10,12 @@ const
 include lib/header/chaemon_header
 
 solveProc solve(N:int, A:seq[int]):
+  var s = 0
+  for i in N: s.xor=A[i]
+  if s == 0:
+    echo "Second"
+  else:
+    echo "First"
   discard
 
 when not defined(DO_TEST):

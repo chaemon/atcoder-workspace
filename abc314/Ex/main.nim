@@ -8,8 +8,8 @@ const
 
 include lib/header/chaemon_header
 import lib/geometry/geometry_template
-#import atcoder/extra/other/internal_complex
-import complex
+import atcoder/extra/other/internal_complex
+#import std/complex
 
 #let gr = (sqrt(5.0) + 1.0) / 2.0
 #
@@ -89,13 +89,14 @@ solveProc solve(N:int, a:seq[int], b:seq[int], c:seq[int], d:seq[int]):
         result.max = abs(t - c)
       else:
         result.max=min(abs(p[i] - c), abs(q[i] - c))
-  let D = 1000.0
+  let D = 0.0
   proc f_x(x:float):float = # xを固定して最小の半径を求める
     proc f0(y:float):float = f(x, y)
     let (y0, v) = goldenSectionSearch(f0, 0.0 - D, 1000.0 + D)
     return v
   let
     (x, v) = goldenSectionSearch(f_x, 0.0 - D, 1000.0 + D)
+  #debug x, v
   echo v
   discard
 

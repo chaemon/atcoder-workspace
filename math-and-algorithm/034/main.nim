@@ -8,6 +8,11 @@ include lib/header/chaemon_header
 
 
 solveProc solve(N:int, x:seq[int], y:seq[int]):
+  ans := float.inf
+  for i in N:
+    for j in i + 1 ..< N:
+      ans.min=sqrt(float((x[i] - x[j])^2 + (y[i] - y[j])^2))
+  echo ans
   discard
 
 when not DO_TEST:

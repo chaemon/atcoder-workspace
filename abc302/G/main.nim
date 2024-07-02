@@ -10,6 +10,16 @@ const
 include lib/header/chaemon_header
 
 solveProc solve(N:int, A:seq[int]):
+  Pred A
+  debug A
+  var
+    dp = Array[4: 0]
+    ans = 0
+  for i in N:
+    for j in A[i] + 1 ..< 4:
+      ans += dp[j]
+    dp[A[i]].inc
+  echo ans
   discard
 
 when not defined(DO_TEST):

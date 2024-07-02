@@ -13,6 +13,7 @@ import atcoder/modint
 const MOD = 1000000007
 type mint = modint1000000007
 solveProc solve(a:int, b:int):
+  echo mint(a)^b
   discard
 
 when not defined(DO_TEST):

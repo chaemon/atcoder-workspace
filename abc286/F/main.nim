@@ -5,7 +5,7 @@ else:
 const
   USE_DEFAULT_TABLE = true
 
-const DO_TEST = true
+const DO_TEST = false
 
 include lib/header/chaemon_header
 import atcoder/math

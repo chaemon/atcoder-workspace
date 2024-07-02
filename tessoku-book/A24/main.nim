@@ -9,7 +9,10 @@ const
 
 include lib/header/chaemon_header
 
+import atcoder/extra/dp/longest_increasing_subsequence
+
 solveProc solve(N:int, A:seq[int]):
+  echo A.longestIncreasingSubsequence()
   discard
 
 when not defined(DO_TEST):

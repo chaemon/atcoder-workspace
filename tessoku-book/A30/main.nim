@@ -8,11 +8,13 @@ const
 
 
 include lib/header/chaemon_header
+import lib/math/combination
 
 import atcoder/modint
 const MOD = 1000000007
 type mint = modint1000000007
 solveProc solve(n:int, r:int):
+  echo mint.C(n, r)
   discard
 
 when not defined(DO_TEST):

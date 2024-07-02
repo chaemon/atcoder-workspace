@@ -10,6 +10,7 @@ const
 include lib/header/chaemon_header
 
 solveProc solve(N:int, M:int, B:int, A:seq[int], C:seq[int]):
+  echo A.sum * M + N * M * B + C.sum * N
   discard
 
 when not defined(DO_TEST):

@@ -10,7 +10,23 @@ const
 include lib/header/chaemon_header
 
 solveProc solve(H:int, A:int, B:int, C:int, D:int):
-  discard
+  var
+    k = 0
+    H0 = H
+    ans0 = 0
+    ans = int.inf
+  # 2をk回使った後に1を使う
+  while true:
+    # H0からアイテム1を使い続ける
+    ans.min=ans0 + (H0.ceilDiv A) * B
+    H0 -= C
+    ans0 += D
+    if H0 > 0:
+      H0 -= H0 div 2
+    if H0 <= 0:
+      ans.min= ans0
+      break
+  echo ans
 
 when not defined(DO_TEST):
   var H = nextInt()

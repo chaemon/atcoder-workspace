@@ -10,6 +10,14 @@ const
 include lib/header/chaemon_header
 
 solveProc solve(N:int, A:seq[int], B:seq[int]):
+  Pred A, B
+  var dp = Seq[N: -int.inf]
+  dp[0] = 0
+  for i in N - 1:
+    if dp[i] == -int.inf: continue
+    dp[A[i]].max=dp[i] + 100
+    dp[B[i]].max=dp[i] + 150
+  echo dp[N - 1]
   discard
 
 when not defined(DO_TEST):

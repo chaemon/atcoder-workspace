@@ -10,6 +10,10 @@ const
 include lib/header/chaemon_header
 
 solveProc solve(B:int):
+  for A in 1 .. 15:
+    if A^A == B:
+      echo A;return
+  echo -1
   discard
 
 when not defined(DO_TEST):

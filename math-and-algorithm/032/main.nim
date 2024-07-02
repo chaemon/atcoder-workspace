@@ -10,6 +10,10 @@ const YES = "Yes"
 const NO = "No"
 
 solveProc solve(N:int, X:int, A:seq[int]):
+  if X in A:
+    echo YES
+  else:
+    echo NO
   discard
 
 when not DO_TEST:

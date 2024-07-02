@@ -1,9 +1,22 @@
+when defined SecondCompile:
+  const DO_CHECK = false;const DEBUG = false
+else:
+  const DO_CHECK = false;const DEBUG = true
 const
-  DO_CHECK = true
-  DEBUG = true
+  USE_DEFAULT_TABLE = true
   DO_TEST = false
 
 include lib/header/chaemon_header
+
+proc isConcave(a:seq[int]):bool =
+  # concave
+  var d:seq[int]
+  for i in a.len - 1:
+    d.add a[i + 1] - a[i]
+  for i in d.len - 1:
+    if not (d[i] >= d[i + 1]): return false
+  return true
+
 
 when not declared ATCODER_SMAWK_HPP:
   const ATCODER_SMAWK_HPP* = 1
@@ -12,11 +25,13 @@ when not declared ATCODER_SMAWK_HPP:
     proc solve(row, col:seq[int]):seq[int] =
       let n = row.len
       if n == 0: return
-      var c2:seq[int]
+      #var c2:seq[int]
+      var c2 = newSeqOfCap[int](col.len)
       for i in col:
         while c2.len > 0 and select(row[c2.len - 1], c2[^1], i): discard c2.pop()
         if c2.len < n: c2.add(i)
-      var r2:seq[int]
+      #var r2:seq[int]
+      var r2 = newSeqOfCap[int](row.len)
       for i in countup(1, n - 1, 2):
         r2.add(row[i])
       let a2 = solve(r2, c2)
@@ -42,40 +57,51 @@ when not declared ATCODER_SMAWK_HPP:
 
 when not declared ATCODER_CONCAVE_MAX_PLUS_CONVOLUTION_HPP:
   const ATCODER_CONCAVE_MAX_PLUS_CONVOLUTION_HPP* = 1
-  proc concave_max_plus_convolution*[T](a, b:seq[T]):seq[T] =
-    let
-      n = a.len
-      m = b.len
-    proc get(i, j:int):int = a[j] + b[i - j]
-    proc select(i, j, k:int):bool =
-      if i < k:
-        return false
-      elif i - j >= m:
-        return true
-      else:
-        return get(i, j) <= get(i, k)
-    let amax = smawk(n + m - 1, n, select)
-    result = newSeq[T](n + m - 1)
-    block:
-      var i = 0
-      while i != n + m - 1:
-        result[i] = get(i, amax[i])
-        i.inc
-    return
+  const USE_SMAWK = false
+  when USE_SMAWK:
+    proc concave_max_plus_convolution*[T](a, b:seq[T]):seq[T] =
+      #doAssert a.isConcave and b.isConcave
+      let
+        n = a.len
+        m = b.len
+      proc get(i, j:int):int = a[j] + b[i - j]
+      proc select(i, j, k:int):bool =
+        if i < k:
+          return false
+        elif i - j >= m:
+          return true
+        else:
+          return get(i, j) <= get(i, k)
+      let amax = smawk(n + m - 1, n, select)
+      result = newSeq[T](n + m - 1)
+      block:
+        var i = 0
+        while i != n + m - 1:
+          result[i] = get(i, amax[i])
+          i.inc
+      return
+  else:
+    proc concave_max_plus_convolution*[T](A, B: seq[T]):seq[T] =
+      result = newSeqWith(A.len + B.len - 1, -T.inf)
+      var
+        i, j = 0
+      while i + j < result.len:
+        result[i + j] = max(result[i + j], A[i] + B[j])
+        if i == A.len - 1:
+          j += 1
+        elif j == B.len - 1:
+          i += 1
+        else:
+          if A[i + 1] + B[j] > A[i] + B[j + 1]:
+            i += 1
+          else:
+            j += 1
 
 when false:
   var
     a = @[1, 2, 3, 4, 5, 4, 3]
     b = @[1, 10, 19, 27, 34, 39, 41]
   doAssert a.len == b.len
-  proc isConcave(a:seq[int]):bool =
-    # concave
-    var d:seq[int]
-    for i in a.len - 1:
-      d.add a[i + 1] - a[i]
-    for i in d.len - 1:
-      if not (d[i] >= d[i + 1]): return false
-    return true
   doAssert a.isConcave and b.isConcave
   var c = concave_max_plus_convolution(a, b)
   var c2 = newSeqWith(a.len + b.len - 1, -int.inf)
@@ -86,6 +112,10 @@ when false:
   echo "OK!!!"
 
 solveProc solve(N:int, R:int, A:seq[int]):
+  if N == 2:
+    echo A[0]
+    return
+  const INF = 2 * 10^14 + 10
   var
     R = R
     B = N - R
@@ -96,7 +126,7 @@ solveProc solve(N:int, R:int, A:seq[int]):
     # 長さはL + 1で固定
     for i in 2:
       for j in 2:
-        result[i][j] = newSeqWith(L + 1, -int.inf)
+        result[i][j] = newSeqWith(L + 1, -INF)
     if n == 1:
       result[0][0][0] = 0
       result[1][1][1] = A[l] + A[l + 1]
@@ -105,20 +135,30 @@ solveProc solve(N:int, R:int, A:seq[int]):
       var
         a = calc(l, m)
         b = calc(m, r)
+      # (i, j) - (k, h)
       for i in 2:
         for j in 2:
           for k in 2:
-            if j == 1 and k == 1: continue
+            if j == 1 and k == 1: continue # 連続できない
             for h in 2:
               var c = concave_max_plus_convolution(a[i][j], b[k][h])
-              for t in c.len:
-                if c[t] < 0: c[t] = -int.inf
+              #doAssert c.isConcave
               for t in c.len:
                 if t > L: break
                 if c[t] >= 0:
                   result[i][h][t].max=c[t]
+              #debug result[i][h]
+              #doAssert result[i][h].isConcave
+      if n >= 3:
+        # result[1][1][1] = -INFにする
+        result[1][1][1] = -INF
+        # result[1][1][0]の辻褄をあわせる
+        result[1][1][0] = result[1][1][1] * 2 - result[1][1][2]
+      #for i in 2:
+      #  for j in 2:
+      #    doAssert result[i][j].isConcave
   let a = calc(0, N - 2)
-  var ans = -int.inf
+  var ans = -INF
   for i in 2:
     for j in 2:
       ans.max=a[i][j][R]

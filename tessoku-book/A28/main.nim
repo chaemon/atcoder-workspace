@@ -9,10 +9,17 @@ const
 
 include lib/header/chaemon_header
 
-import atcoder/modint
-const MOD = 10000
-type mint = modint10000
 solveProc solve(N:int, T:seq[string], A:seq[int]):
+  var a = 0
+  for i in N:
+    case T[i][0]:
+      of '+': a += A[i]
+      of '-': a -= A[i]
+      of '*': a *= A[i]
+      else:
+        discard
+    a = a.floorMod 10000
+    echo a
   discard
 
 when not defined(DO_TEST):

@@ -4,12 +4,9 @@ const
   DO_TEST = false
 include atcoder/extra/header/chaemon_header
 
-
-
 solveProc solve(N:int, Q:int, A:seq[int], L:seq[int], R:seq[int], V:seq[int]):
   return
 
-# input part {{{
 when not DO_TEST:
   var N = nextInt()
   var Q = nextInt()
@@ -22,5 +19,3 @@ when not DO_TEST:
     R[i] = nextInt()
     V[i] = nextInt()
   solve(N, Q, A, L, R, V)
-#}}}
-
