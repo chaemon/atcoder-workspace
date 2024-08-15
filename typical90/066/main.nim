@@ -7,6 +7,18 @@ include atcoder/extra/header/chaemon_header
 
 
 solveProc solve(N:int, L:seq[int], R:seq[int]):
+  var
+    ans = 0.0
+    d:seq[float]
+  for i in N:
+    d.add float(R[i] - L[i] + 1)
+  for i in N:
+    for j in i + 1 ..< N:
+      for k in L[i] .. R[i]:
+        for l in L[j] .. R[j]:
+          if k > l:
+            ans += 1.0 / (d[i] * d[j])
+  echo ans
   return
 
 # input part {{{

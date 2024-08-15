@@ -6,8 +6,15 @@ const
 
 include lib/header/chaemon_header
 
+import lib/geometry/geometry_template
 
 solveProc solve(a_x:int, a_y:int, b_x:int, b_y:int, c_x:int, c_y:int):
+  var
+    a = initPoint[float](a_x, a_y)
+    b = initPoint[float](b_x, b_y)
+    c = initPoint[float](c_x, c_y)
+    s = initSegment(b, c)
+  echo distance(a, s)
   discard
 
 when not DO_TEST:

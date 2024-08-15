@@ -11,6 +11,12 @@ const MOD = 1000000007
 type mint = modint1000000007
 
 solveProc solve(N:int):
+  var f = Seq[N + 1: mint(0)]
+  f[0] = 0
+  f[1] = 1
+  for i in 2 .. N:
+    f[i] = f[i - 1] + f[i - 2]
+  echo f[N]
   discard
 
 when not DO_TEST:

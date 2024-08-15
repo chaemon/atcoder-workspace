@@ -10,6 +10,10 @@ const MOD = 1000000007
 type mint = modint1000000007
 
 solveProc solve(N:int, K:int):
+  if N == 1:
+    echo mint(K)
+  else:
+    echo mint(K) * mint(K - 1) * mint(K - 2)^(N - 2)
   return
 
 # input part {{{

@@ -8,6 +8,7 @@ import atcoder/scc
 
 solveProc solve(N:int, M:int, K:int, A:seq[int], B:seq[int]):
   Pred A, B
+  # 強連結成分があるとだめ
   block:
     var g = initSccGraph(N)
     for i in M:
@@ -23,54 +24,44 @@ solveProc solve(N:int, M:int, K:int, A:seq[int], B:seq[int]):
   for i in M:
     adj[A[i]].add B[i]
     in_deg[B[i]].inc
-  var in_deg0 = initSet[int]()
-  for u in 0 ..< N:
-    if in_deg[u] == 0:
-      in_deg0.incl u
   var
-    ans = Seq[seq[int]]
-    a = Seq[int]
-    found = false
-  proc f(i = 0) =
-    if found:
+    ans_all:seq[seq[int]]
+    ans:seq[int]
+    ended = false
+    q = initDeque[int]()
+  for u in N:
+    if in_deg[u] == 0:
+      q.addLast(u)
+  proc f() =
+    if ans.len == N:
+      ans_all.add ans
+      if ans_all.len == K:
+        ended = true
       return
-    if i == N:
-      ans.add a
-      if ans.len == K:
-        found = true
-        return
-    else:
-      var
-        c = 0
-        nxt = Seq[int]
-      for u in in_deg0:
-        if c == 4:
-          break
-        nxt.add u
-        c.inc
-      for u in nxt:
-        # uを加える
-        in_deg0.excl u
-        for v in adj[u]:
-          in_deg[v].dec
-          if in_deg[v] == 0:
-            in_deg0.incl v
-        a.add u
-        f(i + 1)
-        if found: return
-        discard a.pop
-        in_deg0.incl u
-        for v in adj[u]:
-          if in_deg[v] == 0:
-            in_deg0.excl v
-          in_deg[v].inc
-    discard
-  f(0)
-  for i in ans.len:
-    for j in ans[i].len:
-      ans[i][j].inc
-  for a in ans:
-    echo a.join(" ")
+    let qlen = q.len
+    for _ in qlen:
+      let u = q.popFirst
+      var vs, vs2:seq[int]
+      for v in adj[u]:
+        in_deg[v].dec
+        if in_deg[v] == 0:
+          q.addLast v
+          vs.add v
+      ans.add u + 1
+      f()
+      if ended: return
+      for v in adj[u]:
+        if in_deg[v] == 0:
+          vs2.add q.pop_Last
+        in_deg[v].inc
+      discard ans.pop
+      q.addLast(u)
+  f()
+  if ans.len < K:
+    echo -1
+  else:
+    for ans in ans_all:
+      echo ans.join(" ")
   return
 
 when not DO_TEST:
