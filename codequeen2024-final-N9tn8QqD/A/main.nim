@@ -10,6 +10,12 @@ const
 include lib/header/chaemon_header
 
 solveProc solve(X:int):
+  if X <= 10:
+    echo 10
+  elif X <= 15:
+    echo 15
+  else:
+    echo 17
   discard
 
 when not defined(DO_TEST):

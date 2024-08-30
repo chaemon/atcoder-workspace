@@ -10,6 +10,15 @@ const
 include lib/header/chaemon_header
 
 solveProc solve(N:int, S:seq[string]):
+  proc calc(s:string):int =
+    if s[^1] == '-':
+      return s.find('-')
+    else:
+      return s.find('.') + 5
+  ans := ""
+  for s in S:
+    ans.add '0' + calc(s)
+  echo ans
   discard
 
 when not defined(DO_TEST):
