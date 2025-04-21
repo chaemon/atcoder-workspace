@@ -1,0 +1,17 @@
+{
+ "code_filename": "main.nim",
+ "judge": {
+  "judge_type": "normal"
+ },
+ "lang": "nim",
+ "problem": {
+  "alphabet": "J",
+  "contest": {
+   "contest_id": "past19-open"
+  },
+  "problem_id": "past19_j"
+ },
+ "sample_in_pattern": "in_*.txt",
+ "sample_out_pattern": "out_*.txt",
+ "timeout_ms": 3000
+}

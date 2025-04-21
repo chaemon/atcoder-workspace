@@ -8,8 +8,17 @@ const
 
 
 include lib/header/chaemon_header
+import lib/other/bitutils
 
 solveProc solve(N:int, K:int, A:seq[int]):
+  ans := 0
+  for b in 2^N:
+    if b.popcount != K: continue
+    for i in N:
+      if b[i] == 1:
+        ans += A[i]
+  echo ans
+  doAssert false
   discard
 
 when not defined(DO_TEST):

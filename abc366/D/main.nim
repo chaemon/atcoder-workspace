@@ -11,6 +11,19 @@ include lib/header/chaemon_header
 
 # Failed to predict input format
 solveProc solve():
+  let
+    N = nextInt()
+  var
+    a = Seq[N, N, N: 0]
+    cs = Seq[N + 1, N + 1, N + 1: 0]
+  for i in N:
+    for j in N:
+      for k in N:
+        a[i][j][k] = nextInt()
+  for i in N:
+    for j in N:
+      for k in N:
+        discard
   discard
 
 when not DO_TEST:

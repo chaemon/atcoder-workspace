@@ -8,8 +8,14 @@ const
 
 
 include lib/header/chaemon_header
+import std/heapqueue
 
 solveProc solve(N:int, M:int, K:int, A:seq[int]):
+  var q = initHeapQueue[tuple[a, i:int]]()
+  for i in N:
+    q.push (A[i], i)
+  while 
+  var ans = Seq[N: int]
   discard
 
 when not defined(DO_TEST):

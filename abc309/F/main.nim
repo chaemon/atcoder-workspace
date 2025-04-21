@@ -8,6 +8,7 @@ const
 
 
 include lib/header/chaemon_header
+import sugar
 
 import atcoder/segtree
 
@@ -33,13 +34,13 @@ solveProc solve(N:int, h:seq[int], w:seq[int], d:seq[int]):
     var j = i
     while j < N and a[j][0] == a[i][0]: j.inc
     for k in i ..< j:
-      if st[0 ..< a[i][1]] < a[i][2]:
+      if st[0 ..< a[k][1]] < a[k][2]:
         echo YES;return
     for k in i ..< j:
-      st[a[i][1]] = min(st[a[i][1]], a[i][2])
+      st[a[k][1]] = min(st[a[k][1]], a[k][2])
     i = j
   echo NO
-  discard
+  doAssert false
 
 when not defined(DO_TEST):
   var N = nextInt()

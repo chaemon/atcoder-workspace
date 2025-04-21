@@ -8,18 +8,28 @@ const
 
 
 include lib/header/chaemon_header
+import lib/math/sqrt_int
 
 solveProc solve(N:int):
+  #proc sqrt_i(n:int):int =
+  #  var (l, r) = (1, 2 * 10^9)
+  #  while r - l > 1:
+  #    let mid = (l + r) div 2
+  #    if mid * mid <= n:
+  #      l = mid
+  #    else:
+  #      r = mid
+  #  return l
   var
     v:seq[int]
-    ans = int(sqrt(float(N)) + 1e-10)
+    ans = sqrt_int(N)
   for b in 3 .. 61:
-    let amax = int(pow(float(N), (1 / b)) + 1e-8)
+    let amax = int(pow(float(N), (1 / float(b))) + 1e-8)
     var a = 1
     while a <= amax:
       let t = a^b
       if t > N: break
-      let u = int(sqrt(float(t)) + 1e-10)
+      let u = sqrt_int(t)
       if u * u != t:
         v.add t
       a.inc

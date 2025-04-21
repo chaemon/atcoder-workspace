@@ -10,6 +10,13 @@ const
 include lib/header/chaemon_header
 
 solveProc solve(N:int):
+  var
+    ans = 1
+    p = 1
+  for i in N:
+    p *= 5
+    ans += p
+  echo ans
   discard
 
 when not defined(DO_TEST):

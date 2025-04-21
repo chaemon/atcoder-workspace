@@ -1,0 +1,37 @@
+<html>
+  <head>
+    <title>Canvas sample</title>
+  </head>
+  <body onload="draw();">
+    <canvas id="sample" width="10000" height="10000"></canvas>
+    <script type="text/javascript">
+        function draw(){
+            var canvas = document.getElementById('sample');
+            if (canvas.getContext){
+                var ctx = canvas.getContext('2d');
+                //円弧1
+                ctx.beginPath();
+                ctx.arc(200,150,120,0,Math.PI*2,false);
+                ctx.stroke();
+                //円弧2
+                ctx.beginPath();
+                ctx.arc(200,150,85,0,Math.PI*0.2,true);
+                ctx.stroke();
+                //円弧3
+                ctx.beginPath();
+                ctx.arc(200,150,60,Math.PI*2.0,Math.PI*1.0,false);
+                ctx.stroke();
+                //円弧4
+                ctx.beginPath();
+                ctx.arc(200,150,10,0,Math.PI*2.0,true);
+                ctx.fill();
+            }
+        }
+    </script>
+    <style type="text/css">
+        #sample {
+            background: #fff;
+        }
+    </style>
+  </body>
+</html>

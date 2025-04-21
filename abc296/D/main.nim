@@ -10,7 +10,8 @@ const
 include lib/header/chaemon_header
 
 solveProc solve(N:int, M:int):
-  if N * N < M:
+  if N > 10^9: doAssert false
+  if N <= 10^9 and N * N < M:
     echo -1;return
   ans := int.inf
   # X = a * b (a <= b <= Nとする)
@@ -20,6 +21,8 @@ solveProc solve(N:int, M:int):
     var b = max(M.ceilDiv(a), a)
     if a > b or b > N: continue
     ans.min= a * b
+  if ans == int.inf:
+    doAssert false
   echo ans
   discard
 

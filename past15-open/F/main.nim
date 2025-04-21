@@ -10,7 +10,16 @@ const
 include lib/header/chaemon_header
 
 solveProc solve(N:int, A:seq[int]):
-  discard
+  var
+    v:seq[tuple[A, i:int]]
+    B = Seq[N: int]
+  for i in N:
+    v.add (A[i], i)
+  v.sort
+  for i in N:
+    let (A, j) = v[i]
+    B[j] = i + 1
+  echo B.join(" ")
 
 when not defined(DO_TEST):
   var N = nextInt()

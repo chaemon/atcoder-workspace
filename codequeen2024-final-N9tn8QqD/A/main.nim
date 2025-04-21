@@ -6,7 +6,6 @@ const
   USE_DEFAULT_TABLE = true
   DO_TEST = false
 
-
 include lib/header/chaemon_header
 
 solveProc solve(X:int):

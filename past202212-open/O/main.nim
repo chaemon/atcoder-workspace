@@ -8,6 +8,7 @@ const
 
 include lib/header/chaemon_header
 import atcoder/lazysegtree
+import sugar
 
 type S = seq[int]
 type F = int
@@ -17,7 +18,7 @@ var shift = 0
 proc op(a, b:S):S =
   result = collect(newSeq):
     for i in D: a[i] xor b[i]
-proc e():S = Seq[N: 0]
+proc e():S = Seq[D: 0]
 proc mapping(f:F, s:S):S = s[f .. ^1] & s[0 ..< f]
 proc composition(f1, f2:F):F =
   result = f1 + f2

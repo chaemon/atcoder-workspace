@@ -1,0 +1,1 @@
+! P_1 P_2 \dots P_N A_1 A_2 \dots A_N

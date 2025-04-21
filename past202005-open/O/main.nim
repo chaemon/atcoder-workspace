@@ -1,104 +1,47 @@
-#{{{ header
-{.hints:off warnings:off optimization:speed.}
-import algorithm, sequtils, tables, macros, math, sets, strutils, sugar
-when defined(MYDEBUG):
-  import header
+when defined SecondCompile:
+  const DO_CHECK = false;const DEBUG = false
+else:
+  const DO_CHECK = true;const DEBUG = true
+const
+  USE_DEFAULT_TABLE = true
+  DO_TEST = false
 
-import streams
-proc scanf(formatstr: cstring){.header: "<stdio.h>", varargs.}
-#proc getchar(): char {.header: "<stdio.h>", varargs.}
-proc nextInt(): int = scanf("%lld",addr result)
-proc nextFloat(): float = scanf("%lf",addr result)
-proc nextString[F](f:F): string =
-  var get = false
-  result = ""
-  while true:
-#    let c = getchar()
-    let c = f.readChar
-    if c.int > ' '.int:
-      get = true
-      result.add(c)
-    elif get: return
-proc nextInt[F](f:F): int = parseInt(f.nextString)
-proc nextFloat[F](f:F): float = parseFloat(f.nextString)
-proc nextString():string = stdin.nextString()
 
-template `max=`*(x,y:typed):void = x = max(x,y)
-template `min=`*(x,y:typed):void = x = min(x,y)
-template inf(T): untyped = 
-  when T is SomeFloat: T(Inf)
-  elif T is SomeInteger: ((T(1) shl T(sizeof(T)*8-2)) - (T(1) shl T(sizeof(T)*4-1)))
-  else: assert(false)
+include lib/header/chaemon_header
+import atcoder/mincostflow
 
-proc discardableId[T](x: T): T {.discardable.} =
-  return x
-macro `:=`(x, y: untyped): untyped =
-  if (x.kind == nnkIdent):
-    return quote do:
-      when declaredInScope(`x`):
-        `x` = `y`
-      else:
-        var `x` = `y`
-      discardableId(`x`)
-  else:
-    return quote do:
-      `x` = `y`
-      discardableId(`x`)
+solveProc solve(N, M:int, A, B, R:seq[int]):
+  var
+    g = initMCFGraph[int, int](N * 3 + 3 + N + 2)
+    round = N * 3 # ラウンドu, u + 1, u + 2
+    stick = round + 3 # stick, stick + 1, ..., stick + N - 1を使う
+    s = stick + N
+    t = s + 1
+    RMAX = R.max + 1
+  for i in 3:
+    g.addEdge(s, round + i, M, 0)
+  for i in 3: # ラウンド
+    for j in N:
+      let
+        p = A[j] * B[j]^(i + 1) mod R[i]
+        u = i * N + j
+      g.addEdge(round + i, u, 1, RMAX - p)
+      g.addEdge(u, stick + j, 1, 0)
+  for j in N:
+    var p = 0
+    for i in 3:
+      let pnext = A[j] * B[j]^(i + 1)
+      g.addEdge(stick + j, t, 1, pnext - p)
+      p = pnext
+  let c = g.flow(s, t).cost
+  echo RMAX * M * 3 - c
+  discard
 
-proc toStr[T](v:T):string =
-  proc `$`[T](v:seq[T]):string =
-    v.mapIt($it).join(" ")
-  return $v
-
-proc print0(x: varargs[string, toStr]; sep:string):string{.discardable.} =
-  result = ""
-  for i,v in x:
-    if i != 0: addSep(result, sep = sep)
-    add(result, v)
-  result.add("\n")
-  stdout.write result
-
-var print:proc(x: varargs[string, toStr])
-print = proc(x: varargs[string, toStr]) =
-  discard print0(@x, sep = " ")
-
-type
-  Concept_newSeqWith = concept x
-    newSeqWith(0, x)
-
-template SeqImpl(lens: seq[int]; init: typedesc or Concept_newSeqWith; d, l: static[int]): auto =
-  when d == l:
-    when init is typedesc: newSeq[init](lens[d - 1])
-    else: newSeqWith(lens[d - 1], init)
-  else: newSeqWith(lens[d - 1], SeqImpl(lens, init, d + 1, l))
-
-template Seq(lens: varargs[int]; init: typedesc or Concept_newSeqWith): auto = SeqImpl(@lens, init, 1, lens.len)
-
-template ArrayImpl(lens: static varargs[int]; init: typedesc; d, l: static[int]): typedesc =
-  when d == l: array[lens[d - 1], init]
-  else: array[lens[d - 1], ArrayImpl(lens, init, d + 1, l)]
-
-template Array(lens: static varargs[int]; init: typedesc): auto =
-  ArrayImpl(@lens, init, 1, lens.len).default
-#}}}
-
-var N:int
-var M:int
-var A:seq[int]
-var B:seq[int]
-var R:seq[int]
-
-#{{{ input part
-proc main()
-block:
+var
   N = nextInt()
   M = nextInt()
   A = newSeqWith(N, nextInt())
   B = newSeqWith(N, nextInt())
   R = newSeqWith(3, nextInt())
-#}}}
 
-proc main() =
-  return
-
-main()
+solve(N, M, A, B, R)

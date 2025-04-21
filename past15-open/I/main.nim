@@ -9,8 +9,22 @@ const
 
 include lib/header/chaemon_header
 
+const M = 10^6
+
 solveProc solve(N:int, K:int, A:seq[int]):
-  discard
+  var
+    a, ct = Seq[M + 1: 0]
+    ans = 0
+  for i in N:
+    a[A[i]] += 1
+  for d in 1 .. M:
+    for k in countup(d, M, d):
+      ct[d] += a[k]
+  for d in 1 .. M:
+    if ct[d] >= K:
+      ans.max=d
+  echo ans
+  doAssert false
 
 when not defined(DO_TEST):
   var N = nextInt()

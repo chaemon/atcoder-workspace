@@ -8,8 +8,13 @@ const
 
 
 include lib/header/chaemon_header
+import lib/other/binary_search
 
 solveProc solve(N:int):
+  proc f(n:int):bool =
+    # n * (n + 1) / 2 <= N
+    return n * (n + 1) <= N * 2
+  echo f.maxRight(1 .. 1500000000)
   discard
 
 when not defined(DO_TEST):

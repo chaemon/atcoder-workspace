@@ -10,6 +10,16 @@ const
 include lib/header/chaemon_header
 
 solveProc solve(N:int):
+  var v:seq[int]
+  block:
+    var N = N - 1
+    while N > 0:
+      v.add N mod 5
+      N.div=5
+  v.reverse
+  for i in v.len: v[i] *= 2
+  echo v.join("")
+  doAssert false
   discard
 
 when not defined(DO_TEST):

@@ -6,9 +6,17 @@ const
 
 include lib/header/chaemon_header
 
+import atcoder/dsu
 
 solveProc solve(N:int, M:int, A:seq[int], B:seq[int]):
-  discard
+  Pred A, B
+  var dsu = initDSU(N)
+  for i in M:
+    dsu.merge(A[i], B[i])
+  if dsu.size(0) == N:
+    echo "The graph is connected."
+  else:
+    echo "The graph is not connected."
 
 when not DO_TEST:
   var N = nextInt()

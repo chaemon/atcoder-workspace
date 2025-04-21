@@ -1,0 +1,23 @@
+<html>
+  <head>
+    <title>Canvas sample</title>
+  </head>
+  <body onload="draw();">
+    <canvas id="sample" width="1000" height="1000"></canvas>
+    <script type="text/javascript">
+        function draw(){
+            var canvas = document.getElementById('sample');
+            if (canvas.getContext){
+                var ctx = canvas.getContext('2d');
+                
+            }
+        }
+    </script>
+    <style type="text/css">
+        #sample {
+            background: #fff;
+        }
+    </style>
+  </body>
+</html>
+

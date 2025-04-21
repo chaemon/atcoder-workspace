@@ -15,8 +15,7 @@ solveProc solve(N:int, A:seq[int], B:seq[int], Q:int, t:seq[int]):
   for i in N:
     v.add A[i]
     v.add B[i] + 1
-  for i in Q:
-    v.add t
+  v.add t
   v.sort
   v = v.deduplicate(isSorted = true)
   var st = initLazySegTree[int, int](v.len, (a, b:int)=>a+b, ()=>0, (a, b:int)=>a+b, (a, b:int)=>a+b, ()=>0)

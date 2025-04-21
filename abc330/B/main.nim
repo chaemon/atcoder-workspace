@@ -10,7 +10,16 @@ const
 include lib/header/chaemon_header
 
 solveProc solve(N:int, L:int, R:int, A:seq[int]):
-  discard
+  var ans:seq[int]
+  for i in N:
+    if A[i] <= L:
+      ans.add L
+    elif R <= A[i]:
+      ans.add R
+    else:
+      ans.add A[i]
+  echo ans.join(" ")
+  doAssert false
 
 when not defined(DO_TEST):
   var N = nextInt()

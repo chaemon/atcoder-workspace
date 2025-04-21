@@ -10,7 +10,19 @@ const
 include lib/header/chaemon_header
 
 solveProc solve(N:int, S:seq[string]):
-  discard
+  var m = 0
+  for i in N:
+    m.max=S[i].len
+  var ans = Seq[m: '*'.repeat(N)]
+  for i in N:
+    for j in S[i].len:
+      ans[j][N - 1 - i] = S[i][j]
+  for s in ans.mitems:
+    var u = s.len - 1
+    while s[u] == '*':
+      u.dec
+    s = s[0 .. u]
+  echo ans.join("\n")
 
 when not defined(DO_TEST):
   var N = nextInt()

@@ -10,6 +10,14 @@ const
 include lib/header/chaemon_header
 
 solveProc solve(N:int, a:seq[int]):
+  var a = a.sorted
+  s := 0
+  ct := 0
+  for i in N:
+    if s < a[i]:
+      s += a[i]
+      ct += 1
+  echo ct
   discard
 
 when not defined(DO_TEST):

@@ -12,6 +12,7 @@ include lib/header/chaemon_header
 const YES = "Yes"
 const NO = "No"
 solveProc solve(s:string, t:string):
+  for i in 
   discard
 
 when not defined(DO_TEST):

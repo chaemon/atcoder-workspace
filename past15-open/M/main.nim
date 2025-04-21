@@ -8,8 +8,19 @@ const
 
 
 include lib/header/chaemon_header
+import lib/other/bitset
+
+const B = 2 * 10^6
 
 solveProc solve(N:int, d:seq[int]):
+  var b = initBitSet[B * 2 + 10]()
+  b[B] = 1
+  for d in d:
+    b = (b shl d) or (b shr d)
+  for i in 0 .. 2000000:
+    if b[i + B] == 1:
+      echo i;return
+  doAssert false
   discard
 
 when not defined(DO_TEST):

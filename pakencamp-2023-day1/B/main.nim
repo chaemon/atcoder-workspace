@@ -10,6 +10,16 @@ const
 include lib/header/chaemon_header
 
 solveProc solve(N:int, a:int, b:int, c:int, d:int):
+  var (a, b, c, d) = (a, b, c, d)
+  if c > d: swap c, d
+  if a in [c, d] or b in [c, d]:
+    echo 3
+  elif a in c .. d and b notin c .. d:
+    echo 4
+  elif b in c .. d and a notin c .. d:
+    echo 4
+  else:
+    echo 3
   discard
 
 when not defined(DO_TEST):
